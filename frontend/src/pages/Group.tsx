@@ -1,10 +1,10 @@
 import Layout from "../components/Layout";
 import { Fab, Grid } from "@mui/material";
 import GroupCard from "../components/GroupCard";
-import { useGetGroups } from "../hooks/getGroups";
+import { useGetGroups } from "../hooks/useGetGroups";
 import Cookies from 'js-cookie';
-import { useIsLoggedIn } from "../hooks/getIsLoggedIn";
-
+import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
+import AddGroupModal from "../components/AddGroupModal";
 const Groups = () => {
   const { data: user, isLoading: isuserloading } = useIsLoggedIn();
 
@@ -26,6 +26,7 @@ const Groups = () => {
         ))}
 
       </Grid>
+      <AddGroupModal/>
     </Layout>
   );
 };

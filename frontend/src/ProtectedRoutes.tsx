@@ -1,5 +1,5 @@
 import {useNavigate} from 'react-router-dom';
-import { useIsLoggedIn } from "./hooks/getIsLoggedIn";
+import { useIsLoggedIn } from "./hooks/useGetIsLoggedIn";
 import Cookies from 'js-cookie';
 
 const ProtectedRoute = ({ children })  => {

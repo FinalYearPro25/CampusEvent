@@ -14,7 +14,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useCreateUser } from '../hooks/useCreateUser';
 import { useNavigate } from 'react-router-dom';
-import { useIsLoggedIn } from '../hooks/getIsLoggedIn';
+import { useIsLoggedIn } from '../hooks/useGetIsLoggedIn';
 import Cookies from 'js-cookie';
 import { useQueryClient } from "@tanstack/react-query";
 

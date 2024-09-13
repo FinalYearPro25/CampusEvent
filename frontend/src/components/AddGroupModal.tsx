@@ -6,8 +6,10 @@ import Modal from "@mui/material/Modal";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Fab, Grid, Stack, TextField, styled } from "@mui/material";
 import Paper from "@mui/material/Paper";
+import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
+import { useMutation } from "react-query";
 import { useCreateGroup } from "../hooks/useCreateGroup";
-import { useQueryClient } from "@tanstack/react-query";
+
 
 const style = {
   position: "absolute",
@@ -39,23 +41,23 @@ const Item = styled(Paper)(({ theme }) => ({
   flexGrow: 1,
 }));
 
-export default function BasicModal() {
+export default function AddGroupModal() {
   const [open, setOpen] = React.useState(false);
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
 
-  const { mutate, isPending } = useCreateGroup();
-  const [title, setTitle] = useState("");
+  const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const queryClient = useQueryClient();
+  const { data: user, isLoading: isuserloading } = useIsLoggedIn();
+
+  const { mutate } = useCreateGroup();
   const handleSubmit = () => {
     mutate(
-      { title, description },
+      { name, description, created_by: user?.user_id, edited_by: user?.user_id },
       {
         onSuccess: () => {
-          setTitle("");
+          setName("");
           setDescription("");
-          queryClient.invalidateQueries({ queryKey: ["groups"] });
           handleClose();
         },
         onError: (e) => {
@@ -63,7 +65,25 @@ export default function BasicModal() {
         },
       }
     );
-  };
+  }
+
+  // const queryClient = useQueryClient();
+  // const handleSubmit = () => {
+  //   mutate(
+  //     { title, description },
+  //     {
+  //       onSuccess: () => {
+  //         setTitle("");
+  //         setDescription("");
+  //         queryClient.invalidateQueries({ queryKey: ["groups"] });
+  //         handleClose();
+  //       },
+  //       onError: (e) => {
+  //         console.log(e);
+  //       },
+  //     }
+  //   );
+  // };
 
   return (
     <div>
@@ -85,7 +105,7 @@ export default function BasicModal() {
                 variant="outlined"
                 fullWidth
                 name="title"
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={12} md={12} key="1">
@@ -108,7 +128,7 @@ export default function BasicModal() {
                 flexWrap="wrap"
                 sx={{float:"right"}}
               >
-                <Button variant="contained" size="small"  onClick={handleSubmit} disabled={isPending} color="success">
+                <Button variant="contained" size="small"  color="success" onClick={handleSubmit}>
                   {" "}
                   Submit
                 </Button>

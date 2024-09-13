@@ -12,12 +12,11 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import  {useCreateLogin}  from '../hooks/getLogin';
+import  {useCreateLogin}  from '../hooks/useGetLogin';
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
-import { useIsLoggedIn } from '../hooks/getIsLoggedIn';
+import { useIsLoggedIn } from '../hooks/useGetIsLoggedIn';
 
 function Copyright() {
   return (

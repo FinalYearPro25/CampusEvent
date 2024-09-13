@@ -16,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import * as React from "react";
-import { useGetGroupDetail } from "../hooks/getGroupDetail";
+import { useGetGroupDetail } from "../hooks/useGetGroupDetail";
 import { useParams } from "react-router-dom";
 
 const style = {
@@ -36,10 +36,6 @@ export default function GroupContatiner() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  const [open1, setOpen1] = React.useState(false);
-  const handleOpen1 = () => setOpen1(true);
-  const handleClose1 = () => setOpen1(false);
 
   const params = useParams()
 
@@ -65,7 +61,7 @@ export default function GroupContatiner() {
                 size="big"
                 variant="contained"
                 color="primary"
-                onClick={handleOpen1}
+                // onClick={handleOpen1}
                 sx={{ float: "right" }}
               >
                 Add Event

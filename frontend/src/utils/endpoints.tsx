@@ -11,6 +11,9 @@ export const API_ENDPOINTS = {
     LOGOUT : "/logout",
 
     // Group Detail
-    GROUP_DETAIL : "/groups"
+    GROUP_DETAIL : "/groups",
+
+    // Create Group
+    CREATE_GROUP : "/groups",
 
   };

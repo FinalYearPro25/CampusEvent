@@ -15,7 +15,7 @@ import AdbIcon from "@mui/icons-material/Adb";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import Link from "@mui/material/Link";
-import { useIsLogout } from "../hooks/getLogout";
+import { useIsLogout } from "../hooks/useGetLogout";
 
 // const pages = ["Groups", "Events", "Members"];
 const pages = [
@@ -148,13 +148,14 @@ function ResponsiveAppBar() {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
+            {pages.map((item, index) => (
               <Button
-                key={page}
+                key={index}
                 onClick={handleCloseNavMenu}
+                href={item.linkTo}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
-                {page}
+                {item.name}
               </Button>
             ))}
           </Box>
