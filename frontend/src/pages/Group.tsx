@@ -5,12 +5,16 @@ import { useGetGroups } from "../hooks/useGetGroups";
 import Cookies from 'js-cookie';
 import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
 import AddGroupModal from "../components/AddGroupModal";
+import { useEffect } from "react";
+
+
 const Groups = () => {
   const { data: user, isLoading: isuserloading } = useIsLoggedIn();
-
-
   const { data, isLoading } = useGetGroups(user?.user_id);
 
+  // useEffect(() =>{
+
+  // },[data]);
   if(isuserloading || isLoading){
     return <div>Loading</div>
   }

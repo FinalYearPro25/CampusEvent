@@ -18,7 +18,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1' ,'m
     Route::apiResource('events', EventController::class);
     Route::apiResource('userevents', UserEvent::class);
     Route::get('events/getuserevents/{user_id}', [UserEventController::class, 'getUserEvents']);
-    Route::get('events/{user_id}/geteventsusers', [UserEventController::class, 'getEventUsers']);
+    Route::get('events/geteventsusers/{user_id}/', [UserEventController::class, 'getEventUsers']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 

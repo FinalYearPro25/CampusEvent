@@ -67,24 +67,6 @@ export default function AddGroupModal() {
     );
   }
 
-  // const queryClient = useQueryClient();
-  // const handleSubmit = () => {
-  //   mutate(
-  //     { title, description },
-  //     {
-  //       onSuccess: () => {
-  //         setTitle("");
-  //         setDescription("");
-  //         queryClient.invalidateQueries({ queryKey: ["groups"] });
-  //         handleClose();
-  //       },
-  //       onError: (e) => {
-  //         console.log(e);
-  //       },
-  //     }
-  //   );
-  // };
-
   return (
     <div>
       <Modal

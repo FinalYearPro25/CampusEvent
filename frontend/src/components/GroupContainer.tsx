@@ -15,9 +15,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import * as React from "react";
 import { useGetGroupDetail } from "../hooks/useGetGroupDetail";
 import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const style = {
   position: "absolute",
@@ -33,9 +33,7 @@ const style = {
 
 export default function GroupContatiner() {
 
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [open, setOpen] = useState(false);
 
   const params = useParams()
 
