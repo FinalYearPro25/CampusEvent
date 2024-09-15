@@ -1,23 +1,28 @@
 import {
-  Box,
   Button,
   Card,
   CardActions,
   CardContent,
-  FormControl,
-  FormHelperText,
   Grid,
-  InputLabel,
-  MenuItem,
-  Modal,
-  Select,
-  Stack,
-  TextField,
   Typography,
+  TextField,
+  Stack,
 } from "@mui/material";
 import { useGetGroupDetail } from "../hooks/useGetGroupDetail";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import BasicDateTimePicker from "./DateAndTime";
+import { useCreateEvent } from "../hooks/useCreateEvent";
+import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import dayjs, { Dayjs } from "dayjs";
+import "dayjs/locale/de";
+import { useQueryClient } from "@tanstack/react-query";
 
 const style = {
   position: "absolute",
@@ -31,16 +36,65 @@ const style = {
   borderRadius: 1,
 };
 
+const modalStyle = {
+  // width : 500
+};
+
 export default function GroupContatiner() {
+  const queryClient = useQueryClient();
+  const params = useParams();
+  const { data, isLoading } = useGetGroupDetail(params.id);
 
   const [open, setOpen] = useState(false);
+  const handleClose = () => setOpen(false);
+  const handleOpen = () => setOpen(true);
 
-  const params = useParams()
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  // const [start_date, setStartDate] = useState("");
+  // const [end_date, setEndDate] = useState("");
+  const [location, setLocation] = useState("");
+  const [participants, setParticipants] = useState("");
 
-  const {data, isLoading} = useGetGroupDetail(params.id);
+  const [start_date, setStartDate] = useState<Dayjs | null>(dayjs());
+  const [end_date, setEndDate] = useState<Dayjs | null>(dayjs().add(7, "day"));
 
-  if(isLoading ){
-    return <div>Loading</div>
+  const { data: user, isLoading: isuserloading } = useIsLoggedIn();
+
+  const { mutate } = useCreateEvent();
+  const handleSubmit = () => {
+    mutate(
+      {
+        title,
+        description,
+        start_date,
+        end_date,
+        location,
+        participants,
+        created_by: user?.user_id,
+        edited_by: user?.user_id,
+        group_id: params.id,
+      },
+      {
+        onSuccess: () => {
+          setTitle("");
+          setDescription("");
+          setStartDate(dayjs());
+          setEndDate(dayjs().add(7, "day"));
+          setLocation("");
+          setParticipants("");
+          handleClose();
+          queryClient.invalidateQueries({ queryKey: ["events"] });
+        },
+        onError: (e) => {
+          console.log(e);
+        },
+      }
+    );
+  };
+
+  if (isLoading) {
+    return <div>Loading</div>;
   }
 
   return (
@@ -59,33 +113,126 @@ export default function GroupContatiner() {
                 size="big"
                 variant="contained"
                 color="primary"
-                // onClick={handleOpen1}
+                onClick={handleOpen}
                 sx={{ float: "right" }}
               >
                 Add Event
               </Button>
             </Grid>
-            {/* <Grid item xs={12} sm={2} md={1.5}>
-              <Button
-                size="big"
-                variant="contained"
-                color="secondary"
-                onClick={handleOpen}
-                sx={{ float: "right" }}
-              >
-                Add Memebers
-              </Button>
-            </Grid> */}
           </Grid>
         </CardContent>
-        <CardActions>
-          {/* {data.map((item) => (
-            <Tooltip title={item.email} placement="top-start">
-              <AccountCircleIcon />
-            </Tooltip>
-          ))} */}
-        </CardActions>
+        <CardActions></CardActions>
       </Card>
+      <Modal
+        sx={modalStyle}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Add New Group
+          </Typography>
+          <Grid container spacing={1}>
+            <Grid item xs={12} sm={12} md={12} key="1">
+              <TextField
+                id="outlined-basic"
+                label="Title"
+                variant="outlined"
+                fullWidth
+                name="title"
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} md={12} key="1">
+              <TextField
+                id="outlined-basic"
+                label="Description"
+                variant="outlined"
+                multiline
+                rows={4}
+                fullWidth
+                name="description"
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} md={12}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={["DateTimePicker"]}>
+                  <DateTimePicker
+                    label="Start Date"
+                    name="start_date"
+                    value={start_date}
+                    onChange={(newValue) => setStartDate(newValue)}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12} sm={12} md={12}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={["DateTimePicker"]}>
+                  <DateTimePicker
+                    label="End Date"
+                    name="end_date"
+                    value={end_date}
+                    onChange={(newValue) => setEndDate(newValue)}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12} sm={12} md={12}>
+              <TextField
+                id="outlined-basic"
+                label="Location"
+                variant="outlined"
+                fullWidth
+                name="location"
+                onChange={(e) => setLocation(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} md={12}>
+              <TextField
+                id="outlined-basic"
+                label="Number of Participants"
+                variant="outlined"
+                fullWidth
+                name="participants_limit"
+                type="number"
+                onChange={(e) => setParticipants(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} md={12} key="1">
+              <Stack
+                spacing={{ xs: 1, sm: 2 }}
+                direction="row"
+                useFlexGap
+                flexWrap="wrap"
+                sx={{ float: "right" }}
+              >
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="success"
+                  onClick={handleSubmit}
+                >
+                  {" "}
+                  Submit
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="error"
+                  onClick={() => handleClose()}
+                >
+                  {" "}
+                  Cancel
+                </Button>
+              </Stack>
+            </Grid>
+          </Grid>
+        </Box>
+      </Modal>
     </>
   );
 }

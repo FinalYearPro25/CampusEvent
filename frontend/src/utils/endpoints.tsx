@@ -17,6 +17,9 @@ export const API_ENDPOINTS = {
     CREATE_GROUP : "/groups",
 
     // User Events
-    EVENTS : "/events/geteventsusers",
+    EVENTS : "/events/getGroupEvents",
+
+    // create event
+    CREATE_EVENT : "/events"
 
   };

@@ -8,6 +8,7 @@ use App\Http\Requests\V1\UpdateEventRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\EventCollection;
 use App\Http\Resources\v1\EventResource;
+use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
@@ -65,6 +66,15 @@ class EventController extends Controller
     public function destroy(Event $event)
     {
         $event->delete();
+    }
+
+    public function getGroupsEvents($group_id){
+        $users = DB::table('events')
+        ->where('group_id', $group_id)
+        ->select('*')
+        ->get();
+
+            return $users;
     }
 
 

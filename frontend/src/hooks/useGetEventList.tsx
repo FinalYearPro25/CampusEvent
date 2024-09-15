@@ -7,6 +7,7 @@ export const useGetEventList = (id:number) => {
         queryKey: ["events"],
         queryFn: async () => {
             const { data } = await requests.get(`${API_ENDPOINTS.EVENTS}/${id}`);
+            return data;
         },
         enabled: id ? true : false
     });

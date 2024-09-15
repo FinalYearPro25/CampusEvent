@@ -9,6 +9,7 @@ import Paper from "@mui/material/Paper";
 import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
 import { useMutation } from "react-query";
 import { useCreateGroup } from "../hooks/useCreateGroup";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 const style = {
@@ -42,6 +43,8 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function AddGroupModal() {
+
+  const queryClient = useQueryClient();
   const [open, setOpen] = React.useState(false);
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
@@ -59,6 +62,7 @@ export default function AddGroupModal() {
           setName("");
           setDescription("");
           handleClose();
+          queryClient.invalidateQueries({queryKey:['groups']})
         },
         onError: (e) => {
           console.log(e);

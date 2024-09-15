@@ -6,25 +6,26 @@ import { useParams } from "react-router-dom";
 import { useGetEventList } from "../hooks/useGetEventList";
 
 const GroupDetail = () => {
-  const {id} = useParams()
+  const { id } = useParams();
+  const { data, isLoading } = useGetEventList(id);
 
-  const {data, isPending} = useGetEventList(id);
+  if (isLoading) {
+    return <div>Loading</div>;
+  }
+
   return (
     <Layout>
-        <GroupContainer item={id}/>
-        {/* <TaskTable item={id}/> */}
-        <Grid container direction="row" justifyContent="center">
-    {data.data.map((item:any) =>(
-   <Grid item xs={12}>
-
-     <EventCard item={item}/>
-   </Grid>
-    ))}
-
+      <GroupContainer item={id} />
+      <Grid container direction="row" justifyContent="center">
+        {data &&
+          data.map((item: any) => (
+            <Grid item xs={12} mb={2}>
+              <EventCard item={item} />
+            </Grid>
+          ))}
       </Grid>
-  </Layout>
-  )
-}
+    </Layout>
+  );
+};
 
-export default GroupDetail
-
+export default GroupDetail;
