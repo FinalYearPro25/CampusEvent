@@ -8,3 +8,7 @@ a{
 body{
   background-color: gainsboro;
 }
+.float-right{
+    display: flex;
+    justify-content: flex-end;
+}

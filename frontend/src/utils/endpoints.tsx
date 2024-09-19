@@ -20,6 +20,11 @@ export const API_ENDPOINTS = {
     EVENTS : "/events/getGroupEvents",
 
     // create event
-    CREATE_EVENT : "/events"
+    CREATE_EVENT : "/events",
+
+    // Memebers related to user
+    USER_MEMEBERS : "/members/getMembersByUser",
+
+    CREATE_MEMBERS_EVENT: "/membersEvent"
 
   };

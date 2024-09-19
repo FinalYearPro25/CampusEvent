@@ -23,6 +23,9 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/de";
 import { useQueryClient } from "@tanstack/react-query";
+import MembersList from "./SelectMembers";
+import { useGetMembers } from "../hooks/useGetMembers";
+import { useCreateMembersEvent } from "../hooks/useCreateMembersEvent";
 
 const style = {
   position: "absolute",
@@ -45,9 +48,14 @@ export default function GroupContatiner() {
   const params = useParams();
   const { data, isLoading } = useGetGroupDetail(params.id);
 
+
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
+
+  const [openMembers, setOpenMembers] = useState(false);
+  const handleCloseMembers = () => setOpenMembers(false);
+  const handleOpenMembers = () => setOpenMembers(true);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -60,6 +68,8 @@ export default function GroupContatiner() {
   const [end_date, setEndDate] = useState<Dayjs | null>(dayjs().add(7, "day"));
 
   const { data: user, isLoading: isuserloading } = useIsLoggedIn();
+    const {data : members , isLoading : isLodaingMembers} = useGetMembers(user?.user_id);
+
 
   const { mutate } = useCreateEvent();
   const handleSubmit = () => {
@@ -93,6 +103,7 @@ export default function GroupContatiner() {
     );
   };
 
+
   if (isLoading) {
     return <div>Loading</div>;
   }
@@ -102,13 +113,13 @@ export default function GroupContatiner() {
       <Card sx={{ minWidth: 275, mb: 5 }}>
         <CardContent>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={8} md={10}>
+            <Grid item xs={12} sm={8} md={9}>
               <Typography id="modal-modal-title" variant="h6" component="h2">
                 {data.name}
               </Typography>
               <Typography variant="body2"> {data.description} </Typography>
             </Grid>
-            <Grid item xs={12} sm={2} md={2}>
+            <Grid item xs={12} sm={2} md={1.5}>
               <Button
                 size="big"
                 variant="contained"
@@ -117,6 +128,17 @@ export default function GroupContatiner() {
                 sx={{ float: "right" }}
               >
                 Add Event
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={2} md={1.5}>
+              <Button
+                size="big"
+                variant="contained"
+                color="secondary"
+                onClick={handleOpenMembers}
+                // sx={{ float: "right" }}
+              >
+                Add Memebers
               </Button>
             </Grid>
           </Grid>
@@ -233,6 +255,7 @@ export default function GroupContatiner() {
           </Grid>
         </Box>
       </Modal>
+ <MembersList openMembers={openMembers} handleCloseMembers={handleCloseMembers}/>
     </>
   );
 }

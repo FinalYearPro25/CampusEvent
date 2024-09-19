@@ -4,7 +4,7 @@ import { API_ENDPOINTS } from "../utils/endpoints";
 
 export const useGetGroups = (id:number) => {
   return useQuery({
-    queryKey: ["groups",id],
+    queryKey: ["groups"],
     queryFn: async () => {
       const { data } = await requests.get(`${API_ENDPOINTS.GROUPS}/${id}`);
       return data;

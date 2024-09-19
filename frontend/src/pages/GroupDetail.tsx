@@ -9,17 +9,13 @@ const GroupDetail = () => {
   const { id } = useParams();
   const { data, isLoading } = useGetEventList(id);
 
-  if (isLoading) {
-    return <div>Loading</div>;
-  }
-
   return (
     <Layout>
       <GroupContainer item={id} />
-      <Grid container direction="row" justifyContent="center">
+      <Grid container spacing={2}>
         {data &&
           data.map((item: any) => (
-            <Grid item xs={12} mb={2}>
+            <Grid item xs={12} md={6} lg={6}  mb={2}>
               <EventCard item={item} />
             </Grid>
           ))}

@@ -74,7 +74,19 @@ class EventController extends Controller
         ->select('*')
         ->get();
 
-            return $users;
+        // var_dump($users);
+
+        foreach($users as $user){
+            // var_dump($user->id);
+        $members = DB::table('members')
+        ->Join('members_event','members_event.members_id','=','members.id')
+        ->where('members_event.event_id',$user->id)
+        ->select('members.*')
+        ->get();
+        $user->members = $members;
+    }
+
+        return $users;
     }
 
 

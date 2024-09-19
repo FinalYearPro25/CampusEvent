@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\GroupController;
 use App\Http\Controllers\Api\V1\EventController;
+use App\Http\Controllers\Api\V1\MembersController;
 use App\Http\Controllers\Api\V1\UserEventController;
 use App\Models\UserEvent;
 
@@ -20,6 +21,11 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1' ,'m
     Route::get('events/getuserevents/{user_id}', [UserEventController::class, 'getUserEvents']);
     Route::get('events/geteventsusers/{user_id}/', [UserEventController::class, 'getEventUsers']);
     Route::get('events/getGroupEvents/{group_id}',[EventController::class, 'getGroupsEvents']);
+
+    Route::apiResource('members', MembersController::class);
+    Route::get('members/getMembersByUser/{user_id}',[MembersController::class, 'getMembersByUser']);
+    Route::post('/membersEvent', [MembersController::class, 'addEventMembers']);
+
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
