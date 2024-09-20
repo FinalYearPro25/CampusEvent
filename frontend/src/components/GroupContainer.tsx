@@ -13,7 +13,6 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import BasicDateTimePicker from "./DateAndTime";
 import { useCreateEvent } from "../hooks/useCreateEvent";
 import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -24,8 +23,6 @@ import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/de";
 import { useQueryClient } from "@tanstack/react-query";
 import MembersList from "./SelectMembers";
-import { useGetMembers } from "../hooks/useGetMembers";
-import { useCreateMembersEvent } from "../hooks/useCreateMembersEvent";
 
 const style = {
   position: "absolute",
@@ -48,7 +45,6 @@ export default function GroupContatiner() {
   const params = useParams();
   const { data, isLoading } = useGetGroupDetail(params.id);
 
-
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
@@ -59,8 +55,7 @@ export default function GroupContatiner() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  // const [start_date, setStartDate] = useState("");
-  // const [end_date, setEndDate] = useState("");
+
   const [location, setLocation] = useState("");
   const [participants, setParticipants] = useState("");
 
@@ -68,8 +63,6 @@ export default function GroupContatiner() {
   const [end_date, setEndDate] = useState<Dayjs | null>(dayjs().add(7, "day"));
 
   const { data: user, isLoading: isuserloading } = useIsLoggedIn();
-    const {data : members , isLoading : isLodaingMembers} = useGetMembers(user?.user_id);
-
 
   const { mutate } = useCreateEvent();
   const handleSubmit = () => {
@@ -103,8 +96,7 @@ export default function GroupContatiner() {
     );
   };
 
-
-  if (isLoading) {
+  if (isLoading || isuserloading) {
     return <div>Loading</div>;
   }
 
@@ -255,7 +247,10 @@ export default function GroupContatiner() {
           </Grid>
         </Box>
       </Modal>
- <MembersList openMembers={openMembers} handleCloseMembers={handleCloseMembers}/>
+      <MembersList
+        openMembers={openMembers}
+        handleCloseMembers={handleCloseMembers}
+      />
     </>
   );
 }

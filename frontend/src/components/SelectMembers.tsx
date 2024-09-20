@@ -13,12 +13,15 @@ import Modal from "@mui/material/Modal";
 import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
 import { useParams } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 import {
   Button,
   Grid,
   Typography,
   Stack,
+  Snackbar,
 } from "@mui/material";
 
 const style = {
@@ -70,6 +73,31 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 }
 
 export default function MembersList({openMembers,handleCloseMembers}) {
+  const [open, setOpen] = React.useState(false);
+  const [message, setMessage] = React.useState("");
+  const handleClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason,
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+  const action = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
+
   const theme = useTheme();
   const [personName, setPersonName] = React.useState<string[]>([]);
 
@@ -96,8 +124,14 @@ export default function MembersList({openMembers,handleCloseMembers}) {
         group_id
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          if(data.message == "exist"){
+            setOpen(true);
+            setMessage("Cannot group assign member already exists in some event")
+          }else{
           setPersonName([]);
+          handleCloseMembers();
+        }
 
         },
         onError: (e) => {
@@ -189,6 +223,14 @@ export default function MembersList({openMembers,handleCloseMembers}) {
           </Grid>
         </Box>
       </Modal>
+      <Snackbar
+  open={open}
+  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+  autoHideDuration={5000}
+  onClose={handleClose}
+  message={message}
+  action={action}
+/>
     </div>
   );
 }

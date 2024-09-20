@@ -70,9 +70,12 @@ class MembersController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Members $members)
+    public function destroy($id)
     {
-        $members->delete();
+        Members::find($id)->delete();
+        // var_dump($members);
+        // $members->delete();
+        return true;
     }
 
     public function getMembersByUser($user_id, Members $members)
@@ -81,7 +84,8 @@ class MembersController extends Controller
         return new MembersCollection($members);
     }
 
-    public function getMemberIdByEmail($email){
+    public function getMemberIdByEmail($email)
+    {
         $members = Members::where('email', $email)->first();
         // echo $members;
         return $members->id;
@@ -94,11 +98,27 @@ class MembersController extends Controller
         $data = array();
         foreach ($request->members_id as $member) {
             $member_id = $this->getMemberIdByEmail($member);
+            $exist = DB::table('members_event')->find($member_id);
+            if ($exist != NULL)
+                return json_encode(["message" => "exist"]);
             foreach ($events as $event) {
                 $data[] = array('event_id' => $event->id, 'members_id' => $member_id);
             }
         }
-        DB::table('members_event')->insert($data);
+            DB::table('members_event')->insert($data);
     }
 
+    public function getMembersByEvent($event_id)
+    {
+        $members = DB::table('members')
+            ->leftJoin('members_event', 'members.id', 'members_event.members_id')
+            ->where('members_event.event_id', '=', $event_id)
+            ->get();
+        return $members;
+    }
+
+    public function deleteEventMembers($id)
+    {
+        DB::table('members_event')->delete($id);
+    }
 }

@@ -35,9 +35,12 @@ import { useDeleteEvent } from "../hooks/useDeleteEvent";
       <>
         <Card sx={{ minWidth: 275 }}>
           <CardContent>
+          <Link to={`/event/${item.id}`}>
+
               <Typography id="modal-modal-title" variant="h6" component="h2">
                  {item.title}
               </Typography>
+              </Link>
             <Grid item xs>
               <Typography gutterBottom variant="subtitle1" component="div">
               {item.description}

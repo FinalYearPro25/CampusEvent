@@ -29,7 +29,7 @@ const pages = [
   },
   {
     name: "Memebers",
-    linkTo: "#",
+    linkTo: "/members",
   },
 ];
 

@@ -25,6 +25,10 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1' ,'m
     Route::apiResource('members', MembersController::class);
     Route::get('members/getMembersByUser/{user_id}',[MembersController::class, 'getMembersByUser']);
     Route::post('/membersEvent', [MembersController::class, 'addEventMembers']);
+    Route::delete('/membersEvent/{id}', [MembersController::class, 'deleteEventMembers']);
+
+    Route::get('/membersEvent/{event_id}', [MembersController::class, 'getMembersByEvent']);
+
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });

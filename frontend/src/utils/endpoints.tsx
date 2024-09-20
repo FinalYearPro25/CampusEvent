@@ -25,6 +25,10 @@ export const API_ENDPOINTS = {
     // Memebers related to user
     USER_MEMEBERS : "/members/getMembersByUser",
 
-    CREATE_MEMBERS_EVENT: "/membersEvent"
+    CREATE_MEMBERS_EVENT: "/membersEvent",
+
+    MEMBERS : "/members"
+
+
 
   };

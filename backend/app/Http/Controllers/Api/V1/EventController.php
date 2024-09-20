@@ -68,26 +68,27 @@ class EventController extends Controller
         $event->delete();
     }
 
-    public function getGroupsEvents($group_id){
+    public function getGroupsEvents($group_id)
+    {
         $users = DB::table('events')
-        ->where('group_id', $group_id)
-        ->select('*')
-        ->get();
+            ->where('group_id', $group_id)
+            ->select('*')
+            ->get();
 
-        // var_dump($users);
-
-        foreach($users as $user){
-            // var_dump($user->id);
-        $members = DB::table('members')
-        ->Join('members_event','members_event.members_id','=','members.id')
-        ->where('members_event.event_id',$user->id)
-        ->select('members.*')
-        ->get();
-        $user->members = $members;
-    }
+        foreach ($users as $user) {
+            $members = DB::table('members')
+                ->Join('members_event', 'members_event.members_id', '=', 'members.id')
+                ->where('members_event.event_id', $user->id)
+                ->select('members.*')
+                ->get();
+            $user->members = $members;
+        }
 
         return $users;
     }
 
-
+    // public function getAllUserEvents($user_id){
+    //     $events = DB::table('events')
+    //     ->leftJoin()
+    // }
 }

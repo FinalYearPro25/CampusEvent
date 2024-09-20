@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Members;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,12 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password)
+        ]);
+
+        $members = Members::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'user_id' => $user->id
         ]);
 
         $token = $user->createToken($request->name)->plainTextToken;
