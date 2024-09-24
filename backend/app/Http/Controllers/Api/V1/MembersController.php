@@ -91,21 +91,21 @@ class MembersController extends Controller
         return $members->id;
     }
 
-    public function addEventMembers(Request $request)
+    public function addEventMembersByGroup(Request $request)
     {
         // return $request;
         $events = Event::where("group_id", $request->group_id)->get();
         $data = array();
         foreach ($request->members_id as $member) {
             $member_id = $this->getMemberIdByEmail($member);
-            $exist = DB::table('members_event')->find($member_id);
-            if ($exist != NULL)
-                return json_encode(["message" => "exist"]);
             foreach ($events as $event) {
+                $exist = DB::table('members_event')->where('event_id', '=', $event->id)->where('members_id', '=',  $member_id)->first();
+                if ($exist != NULL)
+                    return json_encode(["message" => "exist"]);
                 $data[] = array('event_id' => $event->id, 'members_id' => $member_id);
             }
         }
-            DB::table('members_event')->insert($data);
+        DB::table('members_event')->insert($data);
     }
 
     public function getMembersByEvent($event_id)
@@ -120,5 +120,18 @@ class MembersController extends Controller
     public function deleteEventMembers($id)
     {
         DB::table('members_event')->delete($id);
+    }
+
+    public function addEventMembers(Request $request)
+    {
+        // var_dump($request);
+        foreach ($request->members_id as $member) {
+            $member_id = $this->getMemberIdByEmail($member);
+            $exist = DB::table('members_event')->where('event_id', '=', $request->event_id)->where('members_id', '=',  $member_id)->first();
+            if ($exist != NULL)
+                return json_encode(["message" => "exist"]);
+            $data[] = array('event_id' => $request->event_id, 'members_id' => $member_id);
+        }
+        DB::table('members_event')->insert($data);
     }
 }

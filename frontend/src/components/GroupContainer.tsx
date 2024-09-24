@@ -250,6 +250,7 @@ export default function GroupContatiner() {
       <MembersList
         openMembers={openMembers}
         handleCloseMembers={handleCloseMembers}
+        functionHandleSubmit="handleSubmitMembers"
       />
     </>
   );

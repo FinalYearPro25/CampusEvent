@@ -8,6 +8,7 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import { useGetMembers } from "../hooks/useGetMembers";
+import { useCreateMembersGroup } from "../hooks/useCreateMembersGroup";
 import { useCreateMembersEvent } from "../hooks/useCreateMembersEvent";
 import Modal from "@mui/material/Modal";
 import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
@@ -23,6 +24,7 @@ import {
   Stack,
   Snackbar,
 } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 
 const style = {
   position: "absolute",
@@ -72,7 +74,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
   };
 }
 
-export default function MembersList({openMembers,handleCloseMembers}) {
+export default function MembersList({openMembers,handleCloseMembers,functionHandleSubmit}) {
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const handleClose = (
@@ -110,18 +112,24 @@ export default function MembersList({openMembers,handleCloseMembers}) {
       typeof value === "string" ? value.split(",") : value
     );
   };
-
+  const queryClient = useQueryClient();
   const params = useParams();
-  const group_id = params.id;
+  const id = params.id;
   const { data: user, isLoading: isuserloading } = useIsLoggedIn();
   const {data : members , isLoading : isLodaingMembers} = useGetMembers(user?.user_id);
 
-  const { mutate } = useCreateMembersEvent();
+  const { mutate } = useCreateMembersGroup();
+  function handleSubmit(){
+    if(functionHandleSubmit == 'handleSubmitMembers')
+      handleSubmitMembers();
+    else
+    handleSubmitMembersEvent();
+  }
   const handleSubmitMembers = () =>{
     mutate(
       {
         personName,
-        group_id
+        id
       },
       {
         onSuccess: (data) => {
@@ -131,6 +139,33 @@ export default function MembersList({openMembers,handleCloseMembers}) {
           }else{
           setPersonName([]);
           handleCloseMembers();
+          queryClient.invalidateQueries({queryKey:["events"]})
+        }
+
+        },
+        onError: (e) => {
+          console.log(e);
+        },
+      }
+    );
+  };
+
+  const { mutate:createMemberEvent } = useCreateMembersEvent();
+  const handleSubmitMembersEvent = () =>{
+    createMemberEvent(
+      {
+        personName,
+        id
+      },
+      {
+        onSuccess: (data) => {
+          if(data.message == "exist"){
+            setOpen(true);
+            setMessage("Cannot assign member already exists the event")
+          }else{
+          setPersonName([]);
+          handleCloseMembers();
+          queryClient.invalidateQueries({queryKey:["members_event"]})
         }
 
         },
@@ -204,7 +239,7 @@ export default function MembersList({openMembers,handleCloseMembers}) {
                   variant="contained"
                   size="small"
                   color="success"
-                  onClick={handleSubmitMembers}
+                  onClick={handleSubmit}
                 >
                   {" "}
                   Submit

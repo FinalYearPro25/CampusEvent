@@ -1,19 +1,24 @@
 import Layout from "../components/Layout";
-import {  Card, CardActions, CardContent, Grid, Typography } from "@mui/material";
+import {  Button, Card, CardActions, CardContent, Grid, Typography } from "@mui/material";
 import {  useParams } from "react-router-dom";
 import { useGetEvent } from "../hooks/useGetEvent";
 import MembersTable from "../components/MemebersTable";
 import { useGetMembersEvent } from "../hooks/useGetMembersEvent";
 import { useDeleteEventMember } from "../hooks/useDeleteEventMember";
 import { useQueryClient } from "@tanstack/react-query";
+import {  useState } from "react";
+import MembersList from "../components/SelectMembers";
 
 const GroupDetail = () => {
   const { id } = useParams();
   const { data, isLoading } = useGetEvent(id);
   const params = useParams();
   const {data:members, isLoading:isMemberLoading} = useGetMembersEvent(params.id);
-  console.log(members);
   const queryClient = useQueryClient();
+
+  const [openMembers, setOpenMembers] = useState(false);
+  const handleCloseMembers = () => setOpenMembers(false);
+  const handleOpenMembers = () => setOpenMembers(true);
 
 
   const { mutate } = useDeleteEventMember();
@@ -45,6 +50,17 @@ const GroupDetail = () => {
       <Grid item xs={12} sm={12} md={12}>
         <Card sx={{ minWidth: 275 }} >
           <CardContent >
+          <Grid item xs={12} sm={2} md={12}>
+              <Button
+                size="big"
+                variant="contained"
+                color="secondary"
+                onClick={handleOpenMembers}
+                sx={{ float: "right" }}
+              >
+                Add Memebers
+              </Button>
+            </Grid>
               <Typography id="modal-modal-title" variant="h6" component="h2">
                 {data.title}
               </Typography>
@@ -73,10 +89,12 @@ const GroupDetail = () => {
                 participants Limit : {data.participants_limit}
               </Typography>
             </Grid>
+
           </CardContent>
           <CardActions>
 
           </CardActions>
+
         </Card>
         </Grid>
       </Grid>
@@ -84,6 +102,11 @@ const GroupDetail = () => {
        <h3> Members List</h3>
       </div>
       <MembersTable members={members} handleDelete={handleDelete} />
+      <MembersList
+        openMembers={openMembers}
+        handleCloseMembers={handleCloseMembers}
+        functionHandleSubmit="handleSubmitMembersEvent"
+      />
     </Layout>
   );
 };
