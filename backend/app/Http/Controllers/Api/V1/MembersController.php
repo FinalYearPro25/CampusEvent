@@ -11,6 +11,8 @@ use App\Http\Resources\v1\MembersResource;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Mail\EventMail;
+use Illuminate\Support\Facades\Mail;
 
 class MembersController extends Controller
 {
@@ -88,7 +90,7 @@ class MembersController extends Controller
     {
         $members = Members::where('email', $email)->first();
         // echo $members;
-        return $members->id;
+        return $members;
     }
 
     public function addEventMembersByGroup(Request $request)
@@ -96,15 +98,16 @@ class MembersController extends Controller
         $events = Event::where("group_id", $request->group_id)->get();
         $data = array();
         foreach ($request->members_id as $member) {
-            $member_id = $this->getMemberIdByEmail($member);
+            $member = $this->getMemberIdByEmail($member);
             foreach ($events as $event) {
                 if ($this->checkLimit($event->id))
                     return json_encode((["message" => "Members limit is reached for some events in this group"]));
 
-                $exist = DB::table('members_event')->where('event_id', '=', $event->id)->where('members_id', '=',  $member_id)->first();
+                $exist = DB::table('members_event')->where('event_id', '=', $event->id)->where('members_id', '=',  $member->id)->first();
                 if ($exist != NULL)
                     return json_encode(["message" => "Cannot group assign member already exists in some event"]);
-                $data[] = array('event_id' => $event->id, 'members_id' => $member_id);
+                $data[] = array('event_id' => $event->id, 'members_id' => $member->id);
+                Mail::to($request->members_id)->send(new EventMail($member->name));
             }
         }
         DB::table('members_event')->insert($data);
@@ -129,11 +132,12 @@ class MembersController extends Controller
         if ($this->checkLimit($request->event_id))
             return json_encode((["message" => "Members limit is reached for this event"]));
         foreach ($request->members_id as $member) {
-            $member_id = $this->getMemberIdByEmail($member);
-            $exist = DB::table('members_event')->where('event_id', '=', $request->event_id)->where('members_id', '=',  $member_id)->first();
+            $member = $this->getMemberIdByEmail($member);
+            $exist = DB::table('members_event')->where('event_id', '=', $request->event_id)->where('members_id', '=',  $member->id)->first();
             if ($exist != NULL)
                 return json_encode(["message" => "Cannot assign member already exists the event"]);
-            $data[] = array('event_id' => $request->event_id, 'members_id' => $member_id);
+            $data[] = array('event_id' => $request->event_id, 'members_id' => $member->id);
+            Mail::to($request->members_id)->send(new EventMail($member->name));
         }
         DB::table('members_event')->insert($data);
     }
@@ -149,8 +153,9 @@ class MembersController extends Controller
         }
     }
 
-    function countMembers(){
-        $member = Members::where('user_id','=',auth('sanctum')->user()->id)->count();
+    function countMembers()
+    {
+        $member = Members::where('user_id', '=', auth('sanctum')->user()->id)->count();
         return $member;
     }
 }
