@@ -84,7 +84,8 @@ class AuthController extends Controller
         if($user) {
             return response()->json([
                 'isLoggedIn' => true,
-                'user_id' => auth('sanctum')->user()->id
+                'user_id' => auth('sanctum')->user()->id,
+                'email' => auth('sanctum')->user()->email
             ]);
         }
     }

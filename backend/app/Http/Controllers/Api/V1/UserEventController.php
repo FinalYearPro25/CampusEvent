@@ -8,6 +8,10 @@ use App\Http\Requests\V1\UpdateUserEventRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
+use App\Http\Controllers\Api\V1\EventController;
+use App\Http\Controllers\Api\V1\GroupController;
+use App\Http\Controllers\API\V1\MembersController;
+
 class UserEventController extends Controller
 {
     /**
@@ -69,9 +73,9 @@ class UserEventController extends Controller
     public function getUserEvents($user_id)
     {
         // return UserEvent::where('user_id', $user_id)->get();
-        $users = DB::table('user_events')
-            ->leftJoin('events', 'events.id', '=', 'user_events.event_id')
-            ->where('user_events.user_id', $user_id)
+        $users = DB::table('members_event')
+            ->leftJoin('events', 'events.id', '=', 'members_event.event_id')
+            ->where('members_event.user_id', $user_id)
             ->select('events.*')
             ->get();
 
@@ -87,5 +91,14 @@ class UserEventController extends Controller
             ->get();
 
         return response()->json($users);
+    }
+
+    public function getStatstics(){
+        $member = new MembersController();
+        $group = new GroupController();
+        $event = new EventController();
+        $data = ["members" => $member->countMembers(), "groups" => $group->countGroups(), "events" => $event->countEvents()];
+        return json_encode($data);
+
     }
 }

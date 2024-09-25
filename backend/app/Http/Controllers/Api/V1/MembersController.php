@@ -93,15 +93,17 @@ class MembersController extends Controller
 
     public function addEventMembersByGroup(Request $request)
     {
-        // return $request;
         $events = Event::where("group_id", $request->group_id)->get();
         $data = array();
         foreach ($request->members_id as $member) {
             $member_id = $this->getMemberIdByEmail($member);
             foreach ($events as $event) {
+                if ($this->checkLimit($event->id))
+                    return json_encode((["message" => "Members limit is reached for some events in this group"]));
+
                 $exist = DB::table('members_event')->where('event_id', '=', $event->id)->where('members_id', '=',  $member_id)->first();
                 if ($exist != NULL)
-                    return json_encode(["message" => "exist"]);
+                    return json_encode(["message" => "Cannot group assign member already exists in some event"]);
                 $data[] = array('event_id' => $event->id, 'members_id' => $member_id);
             }
         }
@@ -124,14 +126,31 @@ class MembersController extends Controller
 
     public function addEventMembers(Request $request)
     {
-        // var_dump($request);
+        if ($this->checkLimit($request->event_id))
+            return json_encode((["message" => "Members limit is reached for this event"]));
         foreach ($request->members_id as $member) {
             $member_id = $this->getMemberIdByEmail($member);
             $exist = DB::table('members_event')->where('event_id', '=', $request->event_id)->where('members_id', '=',  $member_id)->first();
             if ($exist != NULL)
-                return json_encode(["message" => "exist"]);
+                return json_encode(["message" => "Cannot assign member already exists the event"]);
             $data[] = array('event_id' => $request->event_id, 'members_id' => $member_id);
         }
         DB::table('members_event')->insert($data);
+    }
+
+    function checkLimit($id)
+    {
+        $event = Event::where('id', '=', $id)->first();
+        $event_member = DB::table('members_event')->where('event_id', '=', $id)->get();
+        if (count($event_member) >= $event->participants_limit) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    function countMembers(){
+        $member = Members::where('user_id','=',auth('sanctum')->user()->id)->count();
+        return $member;
     }
 }

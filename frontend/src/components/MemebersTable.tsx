@@ -21,10 +21,6 @@ export default function MembersTable({ members, handleDelete }) {
 
 
   const rows = members;
-  console.log(rows);
-  // if(isLoading){
-  //   return <div>Loading</div>;
-  // }
 
 
   return (

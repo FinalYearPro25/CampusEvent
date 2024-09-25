@@ -72,4 +72,9 @@ class GroupController extends Controller
     {
         return new GroupCollection(Group::where('created_by', $user_id)->paginate());
     }
+
+    public function countGroups(){
+        $groups = Group::where('created_by','=',auth('sanctum')->user()->id)->count();
+        return $groups;
+    }
 }

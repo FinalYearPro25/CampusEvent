@@ -78,12 +78,9 @@ const Members = () => {
       deleteMembers(Number(id),
         {
           onSuccess: () => {
-            console.log("success");
-
             queryClient.invalidateQueries({queryKey:['members']})
           },
           onError: (e) => {
-            console.log("error");
             console.log(e);
           },
         });

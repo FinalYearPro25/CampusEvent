@@ -29,12 +29,9 @@ const GroupDetail = () => {
       mutate(Number(id),
         {
           onSuccess: () => {
-            console.log("success");
-
             queryClient.invalidateQueries({queryKey:['members_event']})
           },
           onError: (e) => {
-            console.log("error");
             console.log(e);
           },
         });

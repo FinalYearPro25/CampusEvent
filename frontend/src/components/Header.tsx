@@ -16,6 +16,8 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import Link from "@mui/material/Link";
 import { useIsLogout } from "../hooks/useGetLogout";
+import {useIsLoggedIn} from "../hooks/useGetIsLoggedIn";
+import logo from '../assets/logo.webp';
 
 // const pages = ["Groups", "Events", "Members"];
 const pages = [
@@ -41,7 +43,7 @@ function ResponsiveAppBar() {
     null
   );
   const {mutateAsync: logout, isPending} = useIsLogout();
-
+  const { data: user, isLoading: isuserloading } = useIsLoggedIn();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -67,18 +69,32 @@ function ResponsiveAppBar() {
 
   }
 
+  if(isuserloading){
+    return <div>Loading</div>;
+  }
+
 
 
   return (
     <AppBar position="static" sx={{mb:5}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+        {/* <Box
+  component="img"
+  sx={{
+    height: 20,
+    width: 30,
+    maxHeight: { xs: 233, md: 167 },
+    maxWidth: { xs: 350, md: 250 },
+  }}
+  alt="Eventor"
+  src={logo}
+/> */}
           <Typography
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -89,7 +105,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            Eventor
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -128,7 +144,6 @@ function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -145,7 +160,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            Eventor
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((item, index) => (
@@ -163,7 +178,7 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt={user.email} src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu

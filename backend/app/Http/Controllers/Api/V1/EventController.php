@@ -87,8 +87,8 @@ class EventController extends Controller
         return $users;
     }
 
-    // public function getAllUserEvents($user_id){
-    //     $events = DB::table('events')
-    //     ->leftJoin()
-    // }
+    public function countEvents(){
+        $events = Event::where('created_by','=',auth('sanctum')->user()->id)->count();
+        return $events;
+    }
 }

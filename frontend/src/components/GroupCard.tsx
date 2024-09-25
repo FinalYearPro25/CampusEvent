@@ -5,6 +5,7 @@ import {
   Typography,
   Grid,
   Button,
+  Tooltip,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -23,12 +24,9 @@ const GroupCard = ({ item }) => {
       mutate(Number(id),
         {
           onSuccess: () => {
-            console.log("success");
-
             queryClient.invalidateQueries({queryKey:['groups']})
           },
           onError: (e) => {
-            console.log("error");
             console.log(e);
           },
         });
@@ -48,11 +46,14 @@ const GroupCard = ({ item }) => {
         </CardContent>
         <CardActions>
           <Grid className="float-right" item xs={12}>
+          <Tooltip title="Edit Group" placement="top">
             <Button variant="contained" color="success" size="small">
               <EditIcon fontSize="small" />
             </Button>
+            </Tooltip>
           </Grid>
           <Grid className="float-right" item xs={2}>
+          <Tooltip title="Delete Group" placement="top">
             <Button
               variant="contained"
               color="error"
@@ -61,6 +62,7 @@ const GroupCard = ({ item }) => {
             >
               <DeleteIcon fontSize="small" />
             </Button>
+            </Tooltip>
           </Grid>
         </CardActions>
       </Card>

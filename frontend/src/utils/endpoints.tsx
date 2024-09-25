@@ -29,7 +29,9 @@ export const API_ENDPOINTS = {
     CREATE_MEMBERS_EVENT: "/membersEvent",
 
 
-    MEMBERS : "/members"
+    MEMBERS : "/members",
+
+    STATISTICS: "/statistics"
 
 
 

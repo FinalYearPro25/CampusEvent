@@ -20,7 +20,10 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1' ,'m
     Route::apiResource('userevents', UserEvent::class);
     Route::get('events/getuserevents/{user_id}', [UserEventController::class, 'getUserEvents']);
     Route::get('events/geteventsusers/{user_id}/', [UserEventController::class, 'getEventUsers']);
+    Route::get('statistics/', [UserEventController::class, 'getStatstics']);
+
     Route::get('events/getGroupEvents/{group_id}',[EventController::class, 'getGroupsEvents']);
+
 
     Route::apiResource('members', MembersController::class);
     Route::get('members/getMembersByUser/{user_id}',[MembersController::class, 'getMembersByUser']);

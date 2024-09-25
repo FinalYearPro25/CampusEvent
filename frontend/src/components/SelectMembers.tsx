@@ -133,9 +133,9 @@ export default function MembersList({openMembers,handleCloseMembers,functionHand
       },
       {
         onSuccess: (data) => {
-          if(data.message == "exist"){
+          if(data !== ""){
             setOpen(true);
-            setMessage("Cannot group assign member already exists in some event")
+            setMessage(data.message)
           }else{
           setPersonName([]);
           handleCloseMembers();
@@ -159,9 +159,9 @@ export default function MembersList({openMembers,handleCloseMembers,functionHand
       },
       {
         onSuccess: (data) => {
-          if(data.message == "exist"){
+          if(data !== ""){
             setOpen(true);
-            setMessage("Cannot assign member already exists the event")
+            setMessage(data.message)
           }else{
           setPersonName([]);
           handleCloseMembers();
