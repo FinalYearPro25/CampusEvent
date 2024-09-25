@@ -39,7 +39,7 @@ const GroupDetail = () => {
   };
 
   if(isLoading || isMemberLoading){
-    return <div>Loading</div>;
+    return <div>Loading..</div>;
   }
   return (
     <Layout>

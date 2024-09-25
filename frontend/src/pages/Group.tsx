@@ -16,13 +16,15 @@ const Groups = () => {
 
   // },[data]);
   if(isuserloading || isLoading){
-    return <div>Loading</div>
+    return <div>Loading..</div>
   }
 
 
   return (
     <Layout>
-      <Grid container spacing={2}>
+        <h2 >All Groups</h2>
+
+      <Grid container mt={2} spacing={2}>
         {data.data.map((item:any) => (
           <Grid item xs={12} sm={6} md={4} key={item.id}>
             <GroupCard item={item} />

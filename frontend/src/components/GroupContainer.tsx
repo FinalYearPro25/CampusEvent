@@ -97,7 +97,7 @@ export default function GroupContatiner() {
   };
 
   if (isLoading || isuserloading) {
-    return <div>Loading</div>;
+    return <div>Loading..</div>;
   }
 
   return (

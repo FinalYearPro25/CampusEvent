@@ -18,7 +18,6 @@ const renderIcon = (keyword) =>{
 }
 
 export default function DashboardCard({ item, keyword }) {
-    let icon = "";
 
   return (
     <Card sx={{ maxWidth: 345 }}>

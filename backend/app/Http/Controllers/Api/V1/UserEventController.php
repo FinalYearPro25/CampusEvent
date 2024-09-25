@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Api\V1\EventController;
 use App\Http\Controllers\Api\V1\GroupController;
 use App\Http\Controllers\API\V1\MembersController;
-
+use Carbon\Carbon;
 class UserEventController extends Controller
 {
     /**
@@ -73,13 +73,57 @@ class UserEventController extends Controller
     public function getUserEvents($user_id)
     {
         // return UserEvent::where('user_id', $user_id)->get();
-        $users = DB::table('members_event')
-            ->leftJoin('events', 'events.id', '=', 'members_event.event_id')
-            ->where('members_event.user_id', $user_id)
+        $events = DB::table('events')
+            ->join('members_event', 'events.id', '=', 'members_event.event_id')
+            ->where('members_event.members_id', '=', $user_id)
+            ->orWhere('events.created_by', '=', $user_id)
             ->select('events.*')
+            ->groupBy('events.id')
             ->get();
 
-        return response()->json($users);
+        foreach ($events as $event) {
+            $event_member = DB::table('members_event')->where('members_id', '=', $user_id)
+                ->where('event_id', '=', $event->id)->first();
+            if ($event_member != NULL) {
+                $event->self = TRUE;
+            } else {
+                $event->self = FALSE;
+            }
+        }
+
+        return response()->json($events);
+    }
+
+
+    public function getmonthlyevents($user_id)
+    {
+        // return UserEvent::where('user_id', $user_id)->get();
+        // echo(Carbon::now()->startOfMonth());
+        $events = DB::table('events')
+            ->join('members_event', 'events.id', '=', 'members_event.event_id')
+            ->where(function($query) use ($user_id) {
+                $query->where('members_event.members_id', '=', $user_id)->orWhere('events.created_by', '=', $user_id);
+            })->whereBetween('events.start_date',
+            array(
+                Carbon::now()->startOfMonth(),
+                Carbon::now()->endOfMonth()
+            ))
+            ->select('events.*')
+            ->orderBy('events.start_date')
+            ->groupBy('events.id')
+            ->get();
+
+        foreach ($events as $event) {
+            $event_member = DB::table('members_event')->where('members_id', '=', $user_id)
+                ->where('event_id', '=', $event->id)->first();
+            if ($event_member != NULL) {
+                $event->self = TRUE;
+            } else {
+                $event->self = FALSE;
+            }
+        }
+
+        return response()->json($events);
     }
 
     public function getEventUsers($event_id)
@@ -93,12 +137,12 @@ class UserEventController extends Controller
         return response()->json($users);
     }
 
-    public function getStatstics(){
+    public function getStatstics()
+    {
         $member = new MembersController();
         $group = new GroupController();
         $event = new EventController();
         $data = ["members" => $member->countMembers(), "groups" => $group->countGroups(), "events" => $event->countEvents()];
         return json_encode($data);
-
     }
 }

@@ -8,6 +8,7 @@ import ProtectedRoute from "./ProtectedRoutes";
 import Dashboard from './pages/Dashboard';
 import EventDetail from './pages/EventDetail'
 import Members from './pages/Members';
+import Events from './pages/Events';
 
 
 function App() {
@@ -21,6 +22,8 @@ function App() {
           <Route path="/"  element={<ProtectedRoute><Dashboard /></ProtectedRoute>}></Route>
           <Route path="/group/:id" element={<ProtectedRoute><GroupDetail /></ProtectedRoute>}></Route>
           <Route path="/group" element={<ProtectedRoute><Groups /></ProtectedRoute>}></Route>
+          <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>}></Route>
+
           <Route path="/event/:id" element={<ProtectedRoute><EventDetail /></ProtectedRoute>}></Route>
 
           <Route path="/members" element={<ProtectedRoute><Members /></ProtectedRoute>}></Route>

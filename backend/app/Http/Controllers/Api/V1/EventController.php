@@ -91,4 +91,5 @@ class EventController extends Controller
         $events = Event::where('created_by','=',auth('sanctum')->user()->id)->count();
         return $events;
     }
+
 }

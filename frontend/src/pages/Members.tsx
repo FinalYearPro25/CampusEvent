@@ -87,7 +87,7 @@ const Members = () => {
     }
   };
   if (isuserloading || isLodaingMembers) {
-    return <div>Loading</div>;
+    return <div>Loading..</div>;
   }
 
   return (

@@ -70,7 +70,7 @@ function ResponsiveAppBar() {
   }
 
   if(isuserloading){
-    return <div>Loading</div>;
+    return <div>Loading.....</div>;
   }
 
 
@@ -138,8 +138,11 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((item, index) => (
-                <MenuItem key={index} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{item.name}</Typography>
+                <MenuItem  key={index} href={item.linkTo} onClick={handleCloseNavMenu}>
+                  <Link style={{ color: 'black', textDecoration: 'none'}} href={item.linkTo}>
+
+                {item.name}
+                </Link>
                 </MenuItem>
               ))}
             </Menu>
@@ -201,6 +204,7 @@ function ResponsiveAppBar() {
                   <Typography textAlign="center">
                     {" "}
                     <Link
+                    style={{ color: 'black', textDecoration: 'none'}}
                       onClick={handelLogout}
                       variant="body2"
                     >

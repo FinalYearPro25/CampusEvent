@@ -31,7 +31,11 @@ export const API_ENDPOINTS = {
 
     MEMBERS : "/members",
 
-    STATISTICS: "/statistics"
+    STATISTICS: "/statistics",
+
+    USER_EVENTS: "events/getuserevents",
+
+    USER_EVENTS_MONTHLY: "events/getmonthlyevents"
 
 
 
