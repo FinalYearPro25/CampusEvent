@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import EventDetail from './pages/EventDetail'
 import Members from './pages/Members';
 import Events from './pages/Events';
+import NotFound from './pages/NotFound';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           {" "}
           <Route path="/login"  element={<SignIn />}></Route>
           <Route path="/signup"  element={<SignUp />}></Route>
+          <Route path="*" element={<NotFound />} />
           <Route path="/"  element={<ProtectedRoute><Dashboard /></ProtectedRoute>}></Route>
           <Route path="/group/:id" element={<ProtectedRoute><GroupDetail /></ProtectedRoute>}></Route>
           <Route path="/group" element={<ProtectedRoute><Groups /></ProtectedRoute>}></Route>

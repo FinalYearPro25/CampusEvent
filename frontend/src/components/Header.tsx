@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import Link from "@mui/material/Link";
 import { useIsLogout } from "../hooks/useGetLogout";
 import {useIsLoggedIn} from "../hooks/useGetIsLoggedIn";
-import logo from '../assets/logo.webp';
+import logo from '../assets/logo.png';
 
 // const pages = ["Groups", "Events", "Members"];
 const pages = [
@@ -76,20 +76,25 @@ function ResponsiveAppBar() {
 
 
   return (
-    <AppBar position="static" sx={{mb:5}}>
+    <AppBar style={{ backgroundColor: '#9868ad'}} position="static" sx={{mb:5}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-        {/* <Box
+          <Link href="/">
+        <Box
   component="img"
   sx={{
-    height: 20,
-    width: 30,
+    height: 60,
+    width: 60,
     maxHeight: { xs: 233, md: 167 },
     maxWidth: { xs: 350, md: 250 },
+    marginRight: 2,
+    marginLeft:-2
+
   }}
-  alt="Eventor"
+  alt="Eventryx"
   src={logo}
-/> */}
+/>
+</Link>
           <Typography
             variant="h6"
             noWrap
@@ -105,7 +110,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            Eventor
+            Eventryx
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -163,7 +168,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            Eventor
+            Eventryx
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((item, index) => (

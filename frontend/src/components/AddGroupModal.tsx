@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import AddIcon from "@mui/icons-material/Add";
-import { Button, Fab, Grid, Stack, TextField, styled } from "@mui/material";
+import { Button, Fab, Grid, Stack, TextField, Tooltip, styled } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
 import { useMutation } from "react-query";
@@ -32,6 +32,7 @@ const stylebutton = {
   bottom: 20,
   left: "auto",
   position: "fixed",
+  backgroundColor: "#9868ad",
 };
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -127,6 +128,8 @@ export default function AddGroupModal() {
           </Grid>
         </Box>
       </Modal>
+      <Tooltip title="Add Group" placement="top">
+
       <Fab
         color="primary"
         aria-label="add"
@@ -135,6 +138,8 @@ export default function AddGroupModal() {
       >
         <AddIcon />
       </Fab>
+      </Tooltip>
+
     </div>
   );
 }
