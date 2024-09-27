@@ -32,6 +32,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1' ,'m
     Route::post('/membersGroup', [MembersController::class, 'addEventMembersByGroup']);
     Route::post('/membersEvent', [MembersController::class, 'addEventMembers']);
 
+
     Route::delete('/membersEvent/{id}', [MembersController::class, 'deleteEventMembers']);
 
     Route::get('/membersEvent/{event_id}', [MembersController::class, 'getMembersByEvent']);
@@ -44,6 +45,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1'], f
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/isLoggedIn', [AuthController::class, 'isLoggedIn']);
+    Route::get('/getCalnderEvent/{id}', [EventController::class, 'getCalnderEvent']);
 
 });
 

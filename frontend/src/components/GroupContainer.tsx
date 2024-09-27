@@ -115,7 +115,7 @@ export default function GroupContatiner() {
               <Button
                 size="big"
                 variant="contained"
-                color="primary"
+                color="secondary"
                 onClick={handleOpen}
                 sx={{ float: "right" }}
               >

@@ -35,7 +35,10 @@ export const API_ENDPOINTS = {
 
     USER_EVENTS: "events/getuserevents",
 
-    USER_EVENTS_MONTHLY: "events/getmonthlyevents"
+    USER_EVENTS_MONTHLY: "events/getmonthlyevents",
+
+    CALANDER_EVENT: "getCalnderEvent"
+
 
 
 

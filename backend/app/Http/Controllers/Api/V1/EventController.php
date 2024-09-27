@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\EventCollection;
 use App\Http\Resources\v1\EventResource;
 use Illuminate\Support\Facades\DB;
+use stdClass;
 
 class EventController extends Controller
 {
@@ -89,6 +90,21 @@ class EventController extends Controller
 
     public function countEvents(){
         $events = Event::where('created_by','=',auth('sanctum')->user()->id)->count();
+        return $events;
+    }
+
+    public function getCalnderEvent($id){
+        $events = DB::table('events')
+        ->leftJoin('members_event', 'members_event.event_id', '=', 'events.id')
+        ->where('members_event.members_id','=',$id)
+        ->get();
+        foreach($events as $event){
+            $members = DB::table('members_event')->where('event_id','=',$event->id)->get();
+            $event->start = $event->start_date;
+            $event->end = $event->end_date;
+            $event->title = $event->title;
+            $event->participants = count($members);
+        }
         return $events;
     }
 

@@ -90,7 +90,7 @@ const EventCard = ({ item }) => {
         <CardActions>
           <Grid className="float-right" item xs={12}>
             <Tooltip title="Edit Event" placement="top">
-              <Button variant="contained" color="success" size="small">
+              <Button variant="contained" className="edit-button" size="small">
                 <EditIcon fontSize="small" />
               </Button>
             </Tooltip>
@@ -98,8 +98,8 @@ const EventCard = ({ item }) => {
           <Grid className="float-right" item xs={1}>
             <Tooltip title="Delete Event" placement="top">
               <Button
+                className="delete-button"
                 variant="contained"
-                color="error"
                 size="small"
                 onClick={() => handleDelete(item.id, item.title)}
               >

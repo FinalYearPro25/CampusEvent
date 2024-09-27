@@ -47,7 +47,7 @@ const GroupCard = ({ item }) => {
         <CardActions>
           <Grid className="float-right" item xs={12}>
           <Tooltip title="Edit Group" placement="top">
-            <Button variant="contained" color="success" size="small">
+            <Button variant="contained" className="edit-button" size="small">
               <EditIcon fontSize="small" />
             </Button>
             </Tooltip>
@@ -55,8 +55,8 @@ const GroupCard = ({ item }) => {
           <Grid className="float-right" item xs={2}>
           <Tooltip title="Delete Group" placement="top">
             <Button
+              className="delete-button"
               variant="contained"
-              color="error"
               size="small"
               onClick={() => handleDelete(item.id,item.name)}
             >

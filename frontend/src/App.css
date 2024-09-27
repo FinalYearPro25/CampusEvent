@@ -25,3 +25,18 @@ html *
   font-optical-sizing: auto;
   font-style: normal;
 }
+.delete-button{
+  background-color: #b367d3 !important;
+}
+.delete-button:hover{
+  background-color: #a02a43 !important;
+}
+.edit-button{
+  background-color: #8d46ad !important;
+}
+.edit-button:hover{
+  background-color: #5f9c62 !important;
+}
+.css-b9rdri-MuiGauge-referenceArc {
+  fill: #7100a5 !important;
+}

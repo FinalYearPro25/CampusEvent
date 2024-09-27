@@ -15,11 +15,11 @@ const NotFound = () => {
     <div style={sectionStyle}>
         {" "}
         <div style={{ textAlign: "center" , paddingTop:400}}>
-          <h1>404 Not Found</h1>
+          <h1 style={{ color:"white"}}>404 Not Found</h1>
             <br></br>
-          <h3>Opps... the page you are looking for is not found.</h3>
+          <h3 style={{ color:"white"}}>Opps... the page you are looking for is not found.</h3>
           <br></br>
-          <Link href="/" style={{ color : "#020054", fontSize: "20px", textDecoration : "underline" }} >Go to Homepage</Link>
+          <Link to="/" style={{ color : "pink", fontSize: "30px", textDecoration : "underline" }} >Go to Homepage</Link>
         </div>
     </div>
   );

@@ -4,6 +4,7 @@ import DashboardCard from "./DashboardCard";
 import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
 import EventTable from "../components/EventTable";
 import { useGetUserEventsMonthly } from "../hooks/useGetUserEventsMonthly";
+import { Link } from "react-router-dom";
 
 const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const d = new Date();
@@ -24,7 +25,9 @@ const DashboardContent = () => {
       <Grid container spacing={2}>
         {Object.keys(stat).map((key) => (
           <Grid item xs={12} sm={6} md={4} key={key}>
+            <Link to={`/${key}`}>
             <DashboardCard item={stat[key]} keyword={key} />
+            </Link>
           </Grid>
         ))}
       </Grid>

@@ -23,7 +23,7 @@ import logo from '../assets/logo.png';
 const pages = [
   {
     name: "Groups",
-    linkTo: "/group",
+    linkTo: "/groups",
   },
   {
     name: "Events",
@@ -112,7 +112,7 @@ function ResponsiveAppBar() {
           >
             Eventryx
           </Typography>
-
+            {(user.isLoggedIn==true)? (
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -152,6 +152,7 @@ function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
+        ): ("")  }
           <Typography
             variant="h5"
             noWrap
@@ -170,6 +171,7 @@ function ResponsiveAppBar() {
           >
             Eventryx
           </Typography>
+          {(user.isLoggedInn==true)? (
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((item, index) => (
               <Button
@@ -182,6 +184,8 @@ function ResponsiveAppBar() {
               </Button>
             ))}
           </Box>
+          ):""}
+          {(user.isLoggedInn==true)? (
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
@@ -219,6 +223,7 @@ function ResponsiveAppBar() {
                 </MenuItem>
             </Menu>
           </Box>
+          ):""}
         </Toolbar>
       </Container>
     </AppBar>

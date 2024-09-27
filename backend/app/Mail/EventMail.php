@@ -20,13 +20,27 @@ class EventMail extends Mailable
     use Queueable, SerializesModels;
 
     private string $name;
+    private string $location;
+    private string $title;
+    private string $startdate;
+    private string $enddate;
+    private string $description;
+    private string $sender_name;
+
 
     /**
      * Create a new message instance.
      */
-    public function __construct(string $name)
+    public function __construct(string $name, string $location, string $title, string $startdate, string $enddate, string $description,string $sender_name)
     {
         $this->name = $name;
+        $this->location = $location;
+        $this->title = $title;
+        $this->startdate = $startdate;
+        $this->enddate = $enddate;
+        $this->description = $description;
+        $this->sender_name = $sender_name;
+
     }
 
     /**
@@ -35,31 +49,31 @@ class EventMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')),
+            from: new Address(env('MAIL_FROM_ADDRESS'),  $this->sender_name),
             replyTo: [
-                      new Address(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')),
-                  ],
-            subject: 'Welcome Mail',
+                new Address(env('MAIL_FROM_ADDRESS'), $this->sender_name),
+            ],
+            subject: 'Invitation for Event',
             using: [
-                      function (Email $email) {
-                          // Headers
-                          $email->getHeaders()
-                              ->addTextHeader('X-Message-Source', env('MAIL_DOMAIN_NAME'))
-                              ->add(new UnstructuredHeader('X-Mailer', 'Mailtrap PHP Client'))
-                          ;
+                function (Email $email) {
+                    // Headers
+                    $email->getHeaders()
+                        ->addTextHeader('X-Message-Source', env('MAIL_DOMAIN_NAME'))
+                        ->add(new UnstructuredHeader('X-Mailer', 'Mailtrap PHP Client'))
+                    ;
 
-                          // Custom Variables
-                          $email->getHeaders()
-                              ->add(new CustomVariableHeader('user_id', '45982'))
-                              ->add(new CustomVariableHeader('batch_id', 'PSJ-12'))
-                          ;
+                    // Custom Variables
+                    $email->getHeaders()
+                        ->add(new CustomVariableHeader('user_id', '45982'))
+                        ->add(new CustomVariableHeader('batch_id', 'PSJ-12'))
+                    ;
 
-                          // Category (should be only one)
-                          $email->getHeaders()
-                              ->add(new CategoryHeader('Event Details'))
-                          ;
-                      },
-                  ]
+                    // Category (should be only one)
+                    $email->getHeaders()
+                        ->add(new CategoryHeader('Event Details'))
+                    ;
+                },
+            ]
         );
     }
 
@@ -70,7 +84,14 @@ class EventMail extends Mailable
     {
         return new Content(
             view: 'mail.event-email',
-            with: ['name' => $this->name],
+            with: [
+                'name' => $this->name,
+                'location' => $this->location,
+                'title' => $this->title,
+                'description' => $this->description,
+                'startdate' => $this->startdate,
+                'enddate' => $this->enddate
+            ],
         );
     }
 
@@ -85,9 +106,9 @@ class EventMail extends Mailable
             // Attachment::fromPath('https://mailtrap.io/wp-content/uploads/2021/04/mailtrap-new-logo.svg')
             //      ->as('logo.svg')
             //      ->withMime('image/svg+xml'),
-         ];
+        ];
     }
-     /**
+    /**
      * Get the message headers.
      */
     public function headers(): Headers

@@ -5,6 +5,7 @@ import CardActionArea from '@mui/material/CardActionArea';
 import GroupIcon from '@mui/icons-material/Group';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
+import { Link } from 'react-router-dom';
 
 const renderIcon = (keyword) =>{
     switch (keyword) {

@@ -10,6 +10,7 @@ import EventDetail from './pages/EventDetail'
 import Members from './pages/Members';
 import Events from './pages/Events';
 import NotFound from './pages/NotFound';
+import MemberEvents from './pages/MemberEvent';
 
 
 function App() {
@@ -21,9 +22,10 @@ function App() {
           <Route path="/login"  element={<SignIn />}></Route>
           <Route path="/signup"  element={<SignUp />}></Route>
           <Route path="*" element={<NotFound />} />
+          <Route path="/memberEvents/:id/:code" element={<MemberEvents />} />
           <Route path="/"  element={<ProtectedRoute><Dashboard /></ProtectedRoute>}></Route>
           <Route path="/group/:id" element={<ProtectedRoute><GroupDetail /></ProtectedRoute>}></Route>
-          <Route path="/group" element={<ProtectedRoute><Groups /></ProtectedRoute>}></Route>
+          <Route path="/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>}></Route>
           <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>}></Route>
 
           <Route path="/event/:id" element={<ProtectedRoute><EventDetail /></ProtectedRoute>}></Route>
