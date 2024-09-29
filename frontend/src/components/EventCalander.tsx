@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { useGetCalanderEvent } from "../hooks/useGetCalanderEvent";
 import { useParams } from "react-router-dom";
 import { Box, Button, Grid, Modal, Stack, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -36,7 +37,7 @@ function convertDates(data) {
   });
 }
 const MyCalendar = (props) => {
-  const { id } = useParams();
+  const { id, code } = useParams();
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
@@ -49,7 +50,7 @@ const MyCalendar = (props) => {
   const [participants, setParticipants] = useState("");
 
 
-  const { data, isLoading } = useGetCalanderEvent(id);
+  const { data, isLoading } = useGetCalanderEvent(id,code);
 
   const handleSelectEvent = useCallback((event) => {
     setOpen(true),
@@ -62,6 +63,11 @@ const MyCalendar = (props) => {
       setParticipants(event.participants);
 
   }, []);
+  const navigate = useNavigate();
+  if(data?.message== "invalid"){
+    navigate("*")
+  }
+
   if (isLoading) {
     return <div>Loading</div>;
   }

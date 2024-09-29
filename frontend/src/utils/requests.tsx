@@ -6,6 +6,7 @@ const BASE_URL_DEV = import.meta.env.VITE_DEV_BASE_URL;
 const ENV = import.meta.env.NODE_ENV;
 const BASE_URL = ENV === "production" ? BASE_URL_PROD : BASE_URL_DEV;
 const token = Cookies.get('token');
+// const token = localStorage.getItem("token");
 const requests = axios.create({
   baseURL: BASE_URL,
   headers: {

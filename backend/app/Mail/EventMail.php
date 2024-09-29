@@ -26,12 +26,14 @@ class EventMail extends Mailable
     private string $enddate;
     private string $description;
     private string $sender_name;
+    private string $code;
+    private string $member_id;
 
 
     /**
      * Create a new message instance.
      */
-    public function __construct(string $name, string $location, string $title, string $startdate, string $enddate, string $description,string $sender_name)
+    public function __construct(string $name, string $location, string $title, string $startdate, string $enddate, string $description,string $sender_name, string $code, string $member_id)
     {
         $this->name = $name;
         $this->location = $location;
@@ -40,6 +42,8 @@ class EventMail extends Mailable
         $this->enddate = $enddate;
         $this->description = $description;
         $this->sender_name = $sender_name;
+        $this->code = $code;
+        $this->member_id = $member_id;
 
     }
 
@@ -90,7 +94,8 @@ class EventMail extends Mailable
                 'title' => $this->title,
                 'description' => $this->description,
                 'startdate' => $this->startdate,
-                'enddate' => $this->enddate
+                'enddate' => $this->enddate,
+                'url' => env("FRONTEND_URL")."/memberEvents/".$this->member_id."/".$this->code
             ],
         );
     }

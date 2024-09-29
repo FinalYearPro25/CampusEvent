@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import React from "react";
 import { Link } from "react-router-dom";
 import { useDeleteGroup } from "../hooks/useDeleteGroup";
 import { useQueryClient } from "@tanstack/react-query";
@@ -45,14 +44,14 @@ const GroupCard = ({ item }) => {
           <Typography variant="body2"> {item.description}</Typography>
         </CardContent>
         <CardActions>
-          <Grid className="float-right" item xs={12}>
+          {/* <Grid className="float-right" item xs={12}>
           <Tooltip title="Edit Group" placement="top">
             <Button variant="contained" className="edit-button" size="small">
               <EditIcon fontSize="small" />
             </Button>
             </Tooltip>
-          </Grid>
-          <Grid className="float-right" item xs={2}>
+          </Grid> */}
+          <Grid className="float-right" item xs={12}>
           <Tooltip title="Delete Group" placement="top">
             <Button
               className="delete-button"

@@ -37,6 +37,18 @@ html *
 .edit-button:hover{
   background-color: #5f9c62 !important;
 }
+.submit-button{
+  background-color: #8d46ad !important;
+}
+.submit-button:hover{
+  background-color: #5f9c62 !important;
+}
+.cancle-button{
+  background-color: #b367d3 !important;
+}
+.cancle-button:hover{
+  background-color: #a02a43 !important;
+}
 .css-b9rdri-MuiGauge-referenceArc {
   fill: #7100a5 !important;
 }

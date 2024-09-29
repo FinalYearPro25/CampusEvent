@@ -65,6 +65,8 @@
             <p><strong>End Date:</strong> {{ $enddate }}</p>
         </div>
 
+        <p>Click the link to see all events {{$url}}</p>
+
         <!-- Thank You Note -->
         <p>If you have any questions or need more information, feel free to reach out to us.</p>
 

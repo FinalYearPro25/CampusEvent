@@ -238,7 +238,7 @@ export default function MembersList({openMembers,handleCloseMembers,functionHand
                 <Button
                   variant="contained"
                   size="small"
-                  color="success"
+                  className="submit-button"
                   onClick={handleSubmit}
                 >
                   {" "}
@@ -247,7 +247,7 @@ export default function MembersList({openMembers,handleCloseMembers,functionHand
                 <Button
                   variant="contained"
                   size="small"
-                  color="error"
+                  className="cancle-button"
                   onClick={() => handleCloseMembers()}
                 >
                   {" "}

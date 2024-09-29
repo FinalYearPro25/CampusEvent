@@ -1,4 +1,3 @@
-import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -59,9 +58,7 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { data, isLoading } = useIsLoggedIn();
-  if (data) {
-    navigate("/");
-  }
+
 
   const handleSubmit = (e:any) => {
     e.preventDefault();
@@ -72,9 +69,12 @@ export default function SignIn() {
           setEmail("");
           setPassword("");
           const token = data.access_token;
+          // localStorage.setItem("token", data.token)
+          console.log(token);
           Cookies.set('user_id', data.user_id, { expires: 7, secure: true });
           Cookies.set('token', token, { expires: 7, secure: true });
-          navigate("/")
+          window.location.href = "/";
+
         },
         onError: (e) => {
           console.log(e);
@@ -82,6 +82,9 @@ export default function SignIn() {
       }
     );
   };
+  if (data) {
+    navigate("/");
+  }
 
   return (
     <Container component="main" maxWidth="xs">

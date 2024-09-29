@@ -64,11 +64,11 @@ function ResponsiveAppBar() {
 
   const handelLogout = async () => {
     await logout()
-      Cookies.remove("token");
+      Cookies.remove("token", {path: "/"});
+      // localStorage.clear();
       navigate("/login");
 
   }
-
   if(isuserloading){
     return <div>Loading.....</div>;
   }
@@ -171,7 +171,7 @@ function ResponsiveAppBar() {
           >
             Eventryx
           </Typography>
-          {(user.isLoggedInn==true)? (
+          {(user.isLoggedIn==true)? (
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((item, index) => (
               <Button
@@ -185,7 +185,7 @@ function ResponsiveAppBar() {
             ))}
           </Box>
           ):""}
-          {(user.isLoggedInn==true)? (
+          {(user.isLoggedIn==true)? (
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">

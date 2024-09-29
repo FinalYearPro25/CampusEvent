@@ -88,14 +88,14 @@ const EventCard = ({ item }) => {
           </Grid>
         </CardContent>
         <CardActions>
-          <Grid className="float-right" item xs={12}>
+          {/* <Grid className="float-right" item xs={12}>
             <Tooltip title="Edit Event" placement="top">
               <Button variant="contained" className="edit-button" size="small">
                 <EditIcon fontSize="small" />
               </Button>
             </Tooltip>
-          </Grid>
-          <Grid className="float-right" item xs={1}>
+          </Grid> */}
+          <Grid className="float-right" item xs={12}>
             <Tooltip title="Delete Event" placement="top">
               <Button
                 className="delete-button"

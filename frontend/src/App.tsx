@@ -21,8 +21,7 @@ function App() {
           {" "}
           <Route path="/login"  element={<SignIn />}></Route>
           <Route path="/signup"  element={<SignUp />}></Route>
-          <Route path="*" element={<NotFound />} />
-          <Route path="/memberEvents/:id/:code" element={<MemberEvents />} />
+          <Route path="/memberEvents/:id?/:code?" element={<MemberEvents />} />
           <Route path="/"  element={<ProtectedRoute><Dashboard /></ProtectedRoute>}></Route>
           <Route path="/group/:id" element={<ProtectedRoute><GroupDetail /></ProtectedRoute>}></Route>
           <Route path="/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>}></Route>
@@ -31,6 +30,8 @@ function App() {
           <Route path="/event/:id" element={<ProtectedRoute><EventDetail /></ProtectedRoute>}></Route>
 
           <Route path="/members" element={<ProtectedRoute><Members /></ProtectedRoute>}></Route>
+          <Route path="*" element={<NotFound />} />
+
 
 
 

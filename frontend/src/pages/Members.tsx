@@ -165,7 +165,7 @@ const Members = () => {
                 <Button
                   variant="contained"
                   size="small"
-                  color="success"
+                  className="submit-button"
                   onClick={handleSubmit}
                 >
                   {" "}
@@ -174,7 +174,7 @@ const Members = () => {
                 <Button
                   variant="contained"
                   size="small"
-                  color="error"
+                  className="cancle-button"
                   onClick={() => handleClose()}
                 >
                   {" "}

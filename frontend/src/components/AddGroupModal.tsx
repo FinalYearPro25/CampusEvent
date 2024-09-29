@@ -115,11 +115,11 @@ export default function AddGroupModal() {
                 flexWrap="wrap"
                 sx={{float:"right"}}
               >
-                <Button variant="contained" size="small"  color="success" onClick={handleSubmit}>
+                <Button variant="contained" size="small" className="submit-button" onClick={handleSubmit}>
                   {" "}
                   Submit
                 </Button>
-                <Button variant="contained" size="small" color="error" onClick={handleClose}>
+                <Button variant="contained" size="small" className="cancle-button" onClick={handleClose}>
                   {" "}
                   Cancel
                 </Button>

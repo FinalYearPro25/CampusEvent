@@ -10,6 +10,7 @@ use App\Http\Resources\v1\EventCollection;
 use App\Http\Resources\v1\EventResource;
 use Illuminate\Support\Facades\DB;
 use stdClass;
+use App\Http\Controllers\API\V1\MembersController;
 
 class EventController extends Controller
 {
@@ -93,19 +94,34 @@ class EventController extends Controller
         return $events;
     }
 
-    public function getCalnderEvent($id){
+    public function getCalnderEvent($id,$code){
+        if($this->checkMemberCode($id,$code) == false){
+            return json_encode(["message"=>"invalid"]);
+        }
         $events = DB::table('events')
         ->leftJoin('members_event', 'members_event.event_id', '=', 'events.id')
         ->where('members_event.members_id','=',$id)
         ->get();
         foreach($events as $event){
-            $members = DB::table('members_event')->where('event_id','=',$event->id)->get();
+            $members = DB::table('members_event')->where('event_id','=',$event->event_id)->get();
             $event->start = $event->start_date;
             $event->end = $event->end_date;
             $event->title = $event->title;
             $event->participants = count($members);
         }
         return $events;
+    }
+
+    public function checkMemberCode($id,$code){
+        $member = DB::table('members')->where('id','=',$id)->first();
+
+        $memberController = new MembersController();
+        $new_code = $memberController->generateUniqueString($id,$member->created_at);
+
+        if ($code == $new_code)
+            return true;
+        else
+            return false;
     }
 
 }

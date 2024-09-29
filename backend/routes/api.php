@@ -45,7 +45,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1'], f
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/isLoggedIn', [AuthController::class, 'isLoggedIn']);
-    Route::get('/getCalnderEvent/{id}', [EventController::class, 'getCalnderEvent']);
+    Route::get('/getCalnderEvent/{id}/{code}', [EventController::class, 'getCalnderEvent']);
 
 });
 

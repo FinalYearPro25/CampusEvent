@@ -11,8 +11,9 @@ const d = new Date();
 let monthname = month[d.getMonth()];
 
 const DashboardContent = () => {
-  const { data:stat, isLoading } = useGetStatistics();
   const { data: user, isLoading: isuserloading } = useIsLoggedIn();
+
+  const { data:stat, isLoading } = useGetStatistics();
   const {data , isLoading: isEventLoading} = useGetUserEventsMonthly(user?.user_id);
 
 
