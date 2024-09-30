@@ -114,7 +114,8 @@ class EventController extends Controller
 
     public function checkMemberCode($id,$code){
         $member = DB::table('members')->where('id','=',$id)->first();
-
+        if($member == NULL)
+            return false;
         $memberController = new MembersController();
         $new_code = $memberController->generateUniqueString($id,$member->created_at);
 

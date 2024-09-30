@@ -67,10 +67,10 @@ class EventMail extends Mailable
                     ;
 
                     // Custom Variables
-                    $email->getHeaders()
-                        ->add(new CustomVariableHeader('user_id', '45982'))
-                        ->add(new CustomVariableHeader('batch_id', 'PSJ-12'))
-                    ;
+                    // $email->getHeaders()
+                    //     ->add(new CustomVariableHeader('user_id', '45982'))
+                    //     ->add(new CustomVariableHeader('batch_id', 'PSJ-12'))
+                    // ;
 
                     // Category (should be only one)
                     $email->getHeaders()
