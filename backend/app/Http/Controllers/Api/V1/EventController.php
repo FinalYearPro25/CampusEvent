@@ -11,6 +11,9 @@ use App\Http\Resources\v1\EventResource;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 use App\Http\Controllers\API\V1\MembersController;
+use App\Mail\EventCancle;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\API\V1\UserEventController;
 
 class EventController extends Controller
 {
@@ -68,6 +71,8 @@ class EventController extends Controller
     public function destroy(Event $event)
     {
         $event->delete();
+        // $userEventController = new UserEventController();
+        // Mail::to($request->members_id)->send(new EventCancle($member->name, $event->location, $event->title, $event->start_date, $event->end_date, $event->description,auth('sanctum')->user()->name,$userEventController->generateUniqueString($member->id,$member->created_at),$member->id));
     }
 
     public function getGroupsEvents($group_id)
@@ -114,7 +119,8 @@ class EventController extends Controller
 
     public function checkMemberCode($id,$code){
         $member = DB::table('members')->where('id','=',$id)->first();
-
+        if($member == NULL)
+            return false;
         $memberController = new MembersController();
         $new_code = $memberController->generateUniqueString($id,$member->created_at);
 

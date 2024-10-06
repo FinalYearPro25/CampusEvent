@@ -52,3 +52,8 @@ html *
 .css-b9rdri-MuiGauge-referenceArc {
   fill: #7100a5 !important;
 }
+
+
+.pac-container{
+  z-index: 9999 !important;
+}

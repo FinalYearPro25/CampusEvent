@@ -3,19 +3,18 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Attachment;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Mail\Mailables\Headers;
 use Illuminate\Queue\SerializesModels;
-use Mailtrap\EmailHeader\CategoryHeader;
-use Mailtrap\EmailHeader\CustomVariableHeader;
-use Symfony\Component\Mime\Email;
+use Illuminate\Mail\Mailables\Address;
+use Illuminate\Mail\Mailables\Headers;
 use Symfony\Component\Mime\Header\UnstructuredHeader;
+use Symfony\Component\Mime\Email;
+use Mailtrap\EmailHeader\CategoryHeader;
 
-class EventMail extends Mailable
+class EventCancle extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -28,8 +27,6 @@ class EventMail extends Mailable
     private string $sender_name;
     private string $code;
     private string $member_id;
-
-
     /**
      * Create a new message instance.
      */
@@ -53,30 +50,23 @@ class EventMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(env('MAIL_FROM_ADDRESS'),  $this->sender_name),
+            from : new Address(env('MAIL_FROM_ADDRESS'), $this->sender_name),
             replyTo: [
                 new Address(env('MAIL_FROM_ADDRESS'), $this->sender_name),
             ],
-            subject: 'Invitation for Event',
+            subject: 'Event Cancle',
             using: [
-                function (Email $email) {
-                    // Headers
+                function (Email $email){
                     $email->getHeaders()
-                        ->addTextHeader('X-Message-Source', env('MAIL_DOMAIN_NAME'))
-                        ->add(new UnstructuredHeader('X-Mailer', 'Mailtrap PHP Client'))
-                    ;
+                    ->addTextHeader('X-Message-Source', env('MAIL_DOMAIN_NAME'))
+                    ->add(new UnstructuredHeader('X-Mailer', 'Mailtrap PHP Client'))
+                ;
 
-                    // Custom Variables
-                    // $email->getHeaders()
-                    //     ->add(new CustomVariableHeader('user_id', '45982'))
-                    //     ->add(new CustomVariableHeader('batch_id', 'PSJ-12'))
-                    // ;
-
-                    // Category (should be only one)
-                    $email->getHeaders()
-                        ->add(new CategoryHeader('Event Details'))
-                    ;
-                },
+                // Category (should be only one)
+                $email->getHeaders()
+                    ->add(new CategoryHeader('Event Cancle'))
+                ;
+                }
             ]
         );
     }
@@ -87,8 +77,9 @@ class EventMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.event-email',
+            view: 'mail.event-cancle',
             with: [
+                'sender_name' => $this->sender_name,
                 'name' => $this->name,
                 'location' => $this->location,
                 'title' => $this->title,
@@ -107,11 +98,7 @@ class EventMail extends Mailable
      */
     public function attachments(): array
     {
-        return [
-            // Attachment::fromPath('https://mailtrap.io/wp-content/uploads/2021/04/mailtrap-new-logo.svg')
-            //      ->as('logo.svg')
-            //      ->withMime('image/svg+xml'),
-        ];
+        return [];
     }
     /**
      * Get the message headers.

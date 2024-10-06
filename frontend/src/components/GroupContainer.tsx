@@ -23,6 +23,7 @@ import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/de";
 import { useQueryClient } from "@tanstack/react-query";
 import MembersList from "./SelectMembers";
+import SelectLocation from "./SelectLocation";
 
 const style = {
   position: "absolute",
@@ -45,6 +46,8 @@ export default function GroupContatiner() {
   const params = useParams();
   const { data, isLoading } = useGetGroupDetail(params.id);
 
+  const [selectedPlace, setSelectedPlace] =
+  useState<google.maps.places.PlaceResult | null>(null);
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
@@ -56,7 +59,6 @@ export default function GroupContatiner() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const [location, setLocation] = useState("");
   const [participants, setParticipants] = useState("");
 
   const [start_date, setStartDate] = useState<Dayjs | null>(dayjs());
@@ -66,13 +68,15 @@ export default function GroupContatiner() {
 
   const { mutate } = useCreateEvent();
   const handleSubmit = () => {
+    const location = selectedPlace?.formatted_address
+
     mutate(
       {
         title,
         description,
         start_date,
         end_date,
-        location,
+       location,
         participants,
         created_by: user?.user_id,
         edited_by: user?.user_id,
@@ -84,7 +88,7 @@ export default function GroupContatiner() {
           setDescription("");
           setStartDate(dayjs());
           setEndDate(dayjs().add(7, "day"));
-          setLocation("");
+          setSelectedPlace("");
           setParticipants("");
           handleClose();
           queryClient.invalidateQueries({ queryKey: ["events"] });
@@ -135,8 +139,10 @@ export default function GroupContatiner() {
             </Grid>
           </Grid>
         </CardContent>
-        <CardActions></CardActions>
+
+        {/* <CardActions><SelectLocation /></CardActions> */}
       </Card>
+
       <Modal
         sx={modalStyle}
         open={open}
@@ -196,13 +202,10 @@ export default function GroupContatiner() {
               </LocalizationProvider>
             </Grid>
             <Grid item xs={12} sm={12} md={12}>
-              <TextField
-                id="outlined-basic"
-                label="Location"
-                variant="outlined"
-                fullWidth
-                name="location"
-                onChange={(e) => setLocation(e.target.value)}
+
+              <SelectLocation
+                selectedPlace={selectedPlace}
+                setSelectedPlace={setSelectedPlace}
               />
             </Grid>
             <Grid item xs={12} sm={12} md={12}>
