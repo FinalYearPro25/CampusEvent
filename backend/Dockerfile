@@ -33,7 +33,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # WORKDIR /var/www/html
 
 # new one
-WORKDIR /app/backend
+WORKDIR /app
 COPY . .
 
 # Install project dependencies

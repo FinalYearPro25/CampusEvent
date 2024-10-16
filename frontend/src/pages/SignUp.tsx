@@ -74,8 +74,9 @@ export default function SignUp() {
         setName("");
         setPasswordConfirmation("");
         const token = data.access_token;
+        Cookies.set('user_id', data.user_id, { expires: 7, secure: true });
         Cookies.set('token', token, { expires: 7, secure: true });
-        navigate("/");
+        window.location.href = "/";
       },
       onError: (e) => {
         console.log(e);

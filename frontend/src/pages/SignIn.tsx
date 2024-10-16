@@ -58,8 +58,6 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { data, isLoading } = useIsLoggedIn();
-
-
   const handleSubmit = (e:any) => {
     e.preventDefault();
     mutate(
@@ -69,8 +67,6 @@ export default function SignIn() {
           setEmail("");
           setPassword("");
           const token = data.access_token;
-          // localStorage.setItem("token", data.token)
-          console.log(token);
           Cookies.set('user_id', data.user_id, { expires: 7, secure: true });
           Cookies.set('token', token, { expires: 7, secure: true });
           window.location.href = "/";
