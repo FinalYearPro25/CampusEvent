@@ -9,11 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\EventCollection;
 use App\Http\Resources\v1\EventResource;
 use Illuminate\Support\Facades\DB;
-use stdClass;
-use App\Http\Controllers\API\V1\MembersController;
-use App\Mail\EventCancle;
-use Illuminate\Support\Facades\Mail;
-use App\Http\Controllers\API\V1\UserEventController;
+use App\Http\Controllers\Api\V1\MembersController;
 
 class EventController extends Controller
 {

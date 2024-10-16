@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\V1;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Members;
 use App\Http\Requests\V1\StoreMembersRequest;

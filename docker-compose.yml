@@ -1,0 +1,53 @@
+version: '1.2'
+
+services:
+  server:
+    image: server:latest
+    build:
+      context: ./backend
+    command: php artisan serve --host 0.0.0.0
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app/backend
+    depends_on:
+      - db
+    networks:
+      - app
+
+  db:
+    image: postgres:alpine3.20
+    # volumes:
+    #   - ./postgressql/data:/var/lib/postgressql/data
+    restart: always
+    env_file:
+      - ./backend/.env
+    ports:
+      - 5432:5432
+    networks:
+      - app
+
+  client:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: dev
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - server
+    networks:
+      - app
+volumes:
+  node_modules:
+
+networks:
+  app:
+    driver: bridge
+

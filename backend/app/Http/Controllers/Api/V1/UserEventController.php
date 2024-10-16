@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\V1;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Models\UserEvent;
 use App\Http\Requests\V1\StoreUserEventRequest;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\Api\V1\EventController;
 use App\Http\Controllers\Api\V1\GroupController;
-use App\Http\Controllers\API\V1\MembersController;
+use App\Http\Controllers\Api\V1\MembersController;
 use Carbon\Carbon;
 class UserEventController extends Controller
 {
