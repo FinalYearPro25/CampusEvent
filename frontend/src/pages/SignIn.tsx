@@ -12,10 +12,12 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import  {useCreateLogin}  from '../hooks/useGetLogin';
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { useIsLoggedIn } from '../hooks/useGetIsLoggedIn';
+import { toast } from "react-toastify";
+import { CircularProgress, Stack } from '@mui/material';
 
 function Copyright() {
   return (
@@ -73,11 +75,19 @@ export default function SignIn() {
 
         },
         onError: (e) => {
-          console.log(e);
+          if (e.response.status === 422){
+            toast.error("Email is not registered in the system.");
+          }
+          if (e.response.status === 401){
+            toast.error("Email or Password does not match.");
+          }
         },
       }
     );
   };
+  // if(isPending){
+  //  return <Stack alignItems="center" spacing={10} mt={25}> <CircularProgress /></Stack>;
+  // }
   if (data) {
     navigate("/");
   }

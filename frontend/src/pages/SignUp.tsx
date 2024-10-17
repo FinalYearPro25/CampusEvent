@@ -62,7 +62,7 @@ export default function SignUp() {
   const navigate = useNavigate();
   const {data, isLoading} = useIsLoggedIn();
   if(data){
-    navigate("/");
+    window.location.href = "/";
   }
 
   const handleSubmit = (e:any) => {

@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { useCreateMembers } from "../hooks/useCreateMembers";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteMember } from "../hooks/useDeleteMember";
+import { toast } from "react-toastify";
 const style = {
   position: "absolute",
   top: "50%",
@@ -62,9 +63,12 @@ const Members = () => {
         setEmail("");
         handleClose();
         queryClient.invalidateQueries({ queryKey: ["members"]})
+        toast.success("Member added to system");
+
       },
       onError : (e) =>{
         console.log(e);
+        toast.error("Failed to add member to system");
       }
 
        }

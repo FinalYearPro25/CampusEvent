@@ -24,6 +24,7 @@ import "dayjs/locale/de";
 import { useQueryClient } from "@tanstack/react-query";
 import MembersList from "./SelectMembers";
 import SelectLocation from "./SelectLocation";
+import { toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -92,9 +93,11 @@ export default function GroupContatiner() {
           setParticipants("");
           handleClose();
           queryClient.invalidateQueries({ queryKey: ["events"] });
+          toast.success("Event added sucessfully");
         },
         onError: (e) => {
           console.log(e);
+          toast.error("Failed to add event");
         },
       }
     );

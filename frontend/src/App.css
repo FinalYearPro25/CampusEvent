@@ -57,3 +57,7 @@ html *
 .pac-container{
   z-index: 9999 !important;
 }
+.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}

@@ -15,6 +15,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteEvent } from "../hooks/useDeleteEvent";
 import BasicGauges from "./BasicGauges";
 import Paper from "@mui/material/Paper";
+import { toast } from "react-toastify";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -37,9 +38,11 @@ const EventCard = ({ item }) => {
       mutate(Number(id), {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["events"] });
+          toast.success("Event removed sucessfully");
         },
         onError: (e) => {
           console.log(e);
+          toast.error("Failed to remove event");
         },
       });
     }

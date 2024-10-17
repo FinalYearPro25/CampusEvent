@@ -12,6 +12,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import { Link } from "react-router-dom";
 import { useDeleteGroup } from "../hooks/useDeleteGroup";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 const GroupCard = ({ item }) => {
   const { mutate } = useDeleteGroup();
@@ -24,9 +25,11 @@ const GroupCard = ({ item }) => {
         {
           onSuccess: () => {
             queryClient.invalidateQueries({queryKey:['groups']})
+            toast.success("Group removed successfully");
           },
           onError: (e) => {
             console.log(e);
+            toast.error("Failed to remove group");
           },
         });
     }

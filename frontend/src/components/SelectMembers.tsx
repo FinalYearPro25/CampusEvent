@@ -14,8 +14,7 @@ import Modal from "@mui/material/Modal";
 import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
 import { useParams } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
+import { toast } from "react-toastify";
 
 import {
   Button,
@@ -75,32 +74,6 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 }
 
 export default function MembersList({openMembers,handleCloseMembers,functionHandleSubmit}) {
-  const [open, setOpen] = React.useState(false);
-  const [message, setMessage] = React.useState("");
-  const handleClose = (
-    event: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason,
-  ) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpen(false);
-  };
-  const action = (
-    <React.Fragment>
-      <IconButton
-        size="small"
-        aria-label="close"
-        color="inherit"
-        onClick={handleClose}
-      >
-        <CloseIcon fontSize="small" />
-      </IconButton>
-    </React.Fragment>
-  );
-
-  const theme = useTheme();
   const [personName, setPersonName] = React.useState<string[]>([]);
 
   const handleChange = (event: SelectChangeEvent<typeof personName>) => {
@@ -134,17 +107,17 @@ export default function MembersList({openMembers,handleCloseMembers,functionHand
       {
         onSuccess: (data) => {
           if(data !== ""){
-            setOpen(true);
-            setMessage(data.message)
+            toast.error(data.message);
           }else{
           setPersonName([]);
           handleCloseMembers();
           queryClient.invalidateQueries({queryKey:["events"]})
         }
-
+        toast.error("Members added succesfully to all events");
         },
         onError: (e) => {
           console.log(e);
+          toast.error("Failed to add members");
         },
       }
     );
@@ -162,15 +135,21 @@ export default function MembersList({openMembers,handleCloseMembers,functionHand
           if(data !== ""){
             setOpen(true);
             setMessage(data.message)
+            toast.error(data.message);
+
           }else{
           setPersonName([]);
           handleCloseMembers();
           queryClient.invalidateQueries({queryKey:["members_event"]})
         }
+        toast.error("Members added succesfully");
+
 
         },
         onError: (e) => {
           console.log(e);
+          toast.error("Failed to add members");
+
         },
       }
     );
@@ -258,14 +237,6 @@ export default function MembersList({openMembers,handleCloseMembers,functionHand
           </Grid>
         </Box>
       </Modal>
-      <Snackbar
-  open={open}
-  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-  autoHideDuration={5000}
-  onClose={handleClose}
-  message={message}
-  action={action}
-/>
     </div>
   );
 }

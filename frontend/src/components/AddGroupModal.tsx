@@ -10,6 +10,7 @@ import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
 import { useMutation } from "react-query";
 import { useCreateGroup } from "../hooks/useCreateGroup";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 
 const style = {
@@ -64,9 +65,13 @@ export default function AddGroupModal() {
           setDescription("");
           handleClose();
           queryClient.invalidateQueries({queryKey:['groups']})
+          toast.success("Group added sucessfully");
+
         },
         onError: (e) => {
           console.log(e);
+          toast.error("Failed to add group. please add all fields.");
+
         },
       }
     );

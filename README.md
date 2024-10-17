@@ -17,7 +17,7 @@ The project is divided into two parts:
 
 ---
 
-## Installation
+## Normal Installation
 
 ### Backend (Laravel)
 
@@ -67,7 +67,51 @@ The project is divided into two parts:
     ```bash
     npm run dev
     ```
+## Docker
 
+### Prerequisites
+
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+
+ 1. Clone the Repository
+    ```bash
+    git clone https://github.com/your-username/your-laravel-project.git
+    cd your-laravel-project
+    ```
+2. Copy the ```.env``` File. Make sure to have a ```.env``` file in the project root. If it doesn't exist, you can create it:
+    ```bash
+    cp .env.example .env
+    ```
+
+3. Configure your .env file to connect to your MySQL database:
+    ```bash
+    POSTGRES_USER = your_username
+    POSTGRES_PASSWORD = your_password
+    POSTGRES_DB = your_db_name
+
+    MAIL_FROM_ADDRESS="info@example.com"
+    MAIL_FROM_NAME="Example Company"
+    MAIL_DOMAIN_NAME ="example.com"
+    ```
+
+4. Build and Start the Containers To build and start the containers, run the following command:
+    ```bash
+    docker-compose up --build -d
+    ```
+5. Generate Application Key Run the following command to generate the application key:
+    ```bash
+    docker-compose exec <contatiner_name_for_backend> php artisan key:generate
+    ```
+6. Run Migrations To execute database migrations, use:
+    ```bash
+    docker-compose exec <contatiner_name_for_backend> php artisan migrate
+    ```
+### Stopping the Containers
+1. To stop the running containers, use:
+    ```bash
+    docker-compose down
+    ```
 ## Features
 
 - Event Scheduling: Create, update, and manage events.

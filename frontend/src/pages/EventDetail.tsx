@@ -8,6 +8,7 @@ import { useDeleteEventMember } from "../hooks/useDeleteEventMember";
 import { useQueryClient } from "@tanstack/react-query";
 import {  useState } from "react";
 import MembersList from "../components/SelectMembers";
+import { toast } from "react-toastify";
 
 const GroupDetail = () => {
   const { id } = useParams();
@@ -30,9 +31,12 @@ const GroupDetail = () => {
         {
           onSuccess: () => {
             queryClient.invalidateQueries({queryKey:['members_event']})
+            toast.success(name+ " removed sucessfully");
+
           },
           onError: (e) => {
             console.log(e);
+            toast.error("Failed to removed member");
           },
         });
     }
