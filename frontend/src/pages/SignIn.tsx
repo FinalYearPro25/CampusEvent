@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { useIsLoggedIn } from '../hooks/useGetIsLoggedIn';
 import { toast } from "react-toastify";
+import * as React from 'react';
 import { CircularProgress, Stack } from '@mui/material';
 
 function Copyright() {
@@ -60,6 +61,7 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { data, isLoading } = useIsLoggedIn();
+
   const handleSubmit = (e:any) => {
     e.preventDefault();
     mutate(
@@ -136,15 +138,15 @@ export default function SignIn() {
             fullWidth
             variant="contained"
             color="primary"
-               disabled={isPending}
+            disabled={isPending}
           >
             Sign In
           </Button>
-          <Grid container>
+          <Grid container spacing={2}>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              {/* <Link href="#" variant="body2">
                 Forgot password?
-              </Link>
+              </Link> */}
             </Grid>
             <Grid item>
               <Link href={"/signup"} variant="body2">
@@ -152,11 +154,24 @@ export default function SignIn() {
               </Link>
             </Grid>
           </Grid>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <h3>Demo user and password</h3>
+            </Grid>
+            <Grid item xs={12}>
+              E-mail: test@eventryx.com
+            </Grid>
+            <Grid item xs={12}>
+            Password: eventryx
+            </Grid>
+          </Grid>
         </form>
       </div>
-      <Box mt={8}>
+      <Box mt={100}>
         <Copyright />
       </Box>
+      {/* <Stack className={spinner ? 'disabled' : ''} alignItems="center" spacing={10} mt={25}> <CircularProgress /></Stack> */}
     </Container>
+
   );
 }

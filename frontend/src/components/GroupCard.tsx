@@ -15,7 +15,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
 const GroupCard = ({ item }) => {
-  const { mutate } = useDeleteGroup();
+  const { mutate, isPending } = useDeleteGroup();
   const queryClient = useQueryClient();
 
   const handleDelete = (id:number,name:string) => {
@@ -61,6 +61,7 @@ const GroupCard = ({ item }) => {
               variant="contained"
               size="small"
               onClick={() => handleDelete(item.id,item.name)}
+              disabled={isPending}
             >
               <DeleteIcon fontSize="small" />
             </Button>

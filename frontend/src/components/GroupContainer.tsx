@@ -67,7 +67,7 @@ export default function GroupContatiner() {
 
   const { data: user, isLoading: isuserloading } = useIsLoggedIn();
 
-  const { mutate } = useCreateEvent();
+  const { mutate, isPending } = useCreateEvent();
   const handleSubmit = () => {
     const location = selectedPlace?.formatted_address
 
@@ -235,6 +235,7 @@ export default function GroupContatiner() {
                   size="small"
                   className="submit-button"
                   onClick={handleSubmit}
+                  disabled={isPending}
                 >
                   {" "}
                   Submit

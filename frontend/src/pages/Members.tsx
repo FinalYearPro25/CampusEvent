@@ -48,7 +48,7 @@ const Members = () => {
   const member_list = members?.data;
   const queryClient = useQueryClient();
 
-  const { mutate } = useCreateMembers();
+  const { mutate, isPending } = useCreateMembers();
 
   const handleSubmit = () => {
     mutate(
@@ -171,6 +171,7 @@ const Members = () => {
                   size="small"
                   className="submit-button"
                   onClick={handleSubmit}
+                  disabled={isPending}
                 >
                   {" "}
                   Submit

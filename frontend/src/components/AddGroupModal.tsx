@@ -55,7 +55,7 @@ export default function AddGroupModal() {
   const [description, setDescription] = useState("");
   const { data: user, isLoading: isuserloading } = useIsLoggedIn();
 
-  const { mutate } = useCreateGroup();
+  const { mutate, isPending } = useCreateGroup();
   const handleSubmit = () => {
     mutate(
       { name, description, created_by: user?.user_id, edited_by: user?.user_id },
@@ -120,7 +120,7 @@ export default function AddGroupModal() {
                 flexWrap="wrap"
                 sx={{float:"right"}}
               >
-                <Button variant="contained" size="small" className="submit-button" onClick={handleSubmit}>
+                <Button variant="contained" size="small" className="submit-button" onClick={handleSubmit} disabled={isPending}>
                   {" "}
                   Submit
                 </Button>

@@ -22,7 +22,7 @@ const GroupDetail = () => {
   const handleOpenMembers = () => setOpenMembers(true);
 
 
-  const { mutate } = useDeleteEventMember();
+  const { mutate, isPending } = useDeleteEventMember();
 
   const handleDelete = (id:number,name:string) => {
     let answer = confirm("Do you want to Delete the Member from this event: "+name);

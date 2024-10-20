@@ -52,19 +52,6 @@ const MenuProps = {
   },
 };
 
-// const names = [
-//   'Oliver Hansen',
-//   'Van Henry',
-//   'April Tucker',
-//   'Ralph Hubbard',
-//   'Omar Alexander',
-//   'Carlos Abbott',
-//   'Miriam Wagner',
-//   'Bradley Wilkerson',
-//   'Virginia Andrews',
-//   'Kelly Snyder',
-// ];
-
 function getStyles(name: string, personName: readonly string[], theme: Theme) {
   return {
     fontWeight: personName.includes(name)
@@ -91,7 +78,7 @@ export default function MembersList({openMembers,handleCloseMembers,functionHand
   const { data: user, isLoading: isuserloading } = useIsLoggedIn();
   const {data : members , isLoading : isLodaingMembers} = useGetMembers(user?.user_id);
 
-  const { mutate } = useCreateMembersGroup();
+  const { mutate, isPending } = useCreateMembersGroup();
   function handleSubmit(){
     if(functionHandleSubmit == 'handleSubmitMembers')
       handleSubmitMembers();
@@ -113,7 +100,7 @@ export default function MembersList({openMembers,handleCloseMembers,functionHand
           handleCloseMembers();
           queryClient.invalidateQueries({queryKey:["events"]})
         }
-        toast.error("Members added succesfully to all events");
+        toast.success("Members added succesfully to all events");
         },
         onError: (e) => {
           console.log(e);
@@ -142,7 +129,7 @@ export default function MembersList({openMembers,handleCloseMembers,functionHand
           handleCloseMembers();
           queryClient.invalidateQueries({queryKey:["members_event"]})
         }
-        toast.error("Members added succesfully");
+        toast.success("Members added succesfully");
 
 
         },
@@ -196,7 +183,7 @@ export default function MembersList({openMembers,handleCloseMembers,functionHand
                 >
                   {members.data?.map((item: any) => (
                     <MenuItem
-                      key={item.email}
+                      key={item.id}
                       value={item.email}
                       //   style={getStyles(email, personName, theme)}
                     >
@@ -219,6 +206,7 @@ export default function MembersList({openMembers,handleCloseMembers,functionHand
                   size="small"
                   className="submit-button"
                   onClick={handleSubmit}
+                  disabled={isPending}
                 >
                   {" "}
                   Submit
