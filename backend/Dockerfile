@@ -3,16 +3,15 @@ FROM php:8.2-apache as web
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
-    libpq-dev
+    libpq-dev \
+    libmcrypt-dev
 
 # clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-#Enable Apache mod_rewrite for URL rewriting
-# RUN a2enmod rewrite
-
 #install PHP extensions
 RUN docker-php-ext-install pdo pdo_pgsql zip
+
 
 # RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
 # && docker-php-ext-install pdo pdo_pgsql pgsql
@@ -38,6 +37,7 @@ COPY . .
 
 # Install project dependencies
 RUN composer install
+
 
 EXPOSE 8000
 # Set permissions
