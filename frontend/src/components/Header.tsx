@@ -11,7 +11,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import Link from "@mui/material/Link";
@@ -65,7 +64,6 @@ function ResponsiveAppBar() {
   const handelLogout = async () => {
     await logout()
       Cookies.remove("token", {path: "/"});
-      // localStorage.clear();
       navigate("/login");
 
   }
@@ -210,6 +208,18 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
                 <MenuItem onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">
+                    {" "}
+                    <Link
+                    style={{ color: 'black', textDecoration: 'none'}}
+                      href={user.url}
+                      variant="body2"
+                    >
+                      Event Calander
+                    </Link>
+                  </Typography>
+                  </MenuItem>
+                  <MenuItem>
                   <Typography textAlign="center">
                     {" "}
                     <Link
@@ -220,6 +230,7 @@ function ResponsiveAppBar() {
                       Logout
                     </Link>
                   </Typography>
+
                 </MenuItem>
             </Menu>
           </Box>

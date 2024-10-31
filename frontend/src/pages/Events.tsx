@@ -8,7 +8,6 @@ import { useGetUserEvents } from "../hooks/useGetUserEvents";
 const Events = () => {
   const { data: user, isLoading: isuserloading } = useIsLoggedIn();
   const {data , isLoading} = useGetUserEvents(user?.user_id);
-//   console.log(data);
   if(isuserloading || isLoading){
     return <div>Loading..</div>
   }
@@ -16,7 +15,7 @@ const Events = () => {
 
   return (
     <Layout>
-        <h2 style={{ marginLeft: '-15px'}}>All Events</h2>
+        <h2 style={{ marginLeft: '-15px'}}>My Participated Events</h2>
       <Grid container mt={4} spacing={2}>
         <EventTable events={{data}} />
 

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Api\V1\MembersController;
 
 class AuthController extends Controller
 {
@@ -80,12 +81,14 @@ class AuthController extends Controller
 
     public function isLoggedIn()
     {
+        $members = new MembersController();
         $user = auth('sanctum')->check();
         if($user) {
             return response()->json([
                 'isLoggedIn' => true,
                 'user_id' => auth('sanctum')->user()->id,
-                'email' => auth('sanctum')->user()->email
+                'email' => auth('sanctum')->user()->email,
+                'url' =>  env("FRONTEND_URL")."/memberEvents/".auth('sanctum')->user()->id."/".$members->generateUniqueString(auth('sanctum')->user()->id, auth('sanctum')->user()->created_at)
             ]);
         }
     }

@@ -10,7 +10,7 @@ const MemberEvents = () => {
 
   return (
     <Layout>
-        <h2 style={{ marginLeft: '-15px'}}>All Events</h2>
+        <h2 >Event Calander</h2>
       <Grid  mt={4} >
     <MyCalendar/>
       </Grid>

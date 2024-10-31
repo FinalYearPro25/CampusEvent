@@ -160,7 +160,7 @@ export default function MembersList({openMembers,handleCloseMembers,functionHand
             Add Members
           </Typography>
           <Grid container spacing={1}>
-            <Grid item xs={12} sm={12} md={12} key="1">
+            <Grid item xs={12} sm={12} md={12}>
               <FormControl sx={{ m: 1, width: 426 }}>
                 <InputLabel id="demo-multiple-chip-label">E-Mail</InputLabel>
                 <Select
@@ -193,7 +193,7 @@ export default function MembersList({openMembers,handleCloseMembers,functionHand
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={12} md={12} key="1">
+            <Grid item xs={12} sm={12} md={12} >
               <Stack
                 spacing={{ xs: 1, sm: 2 }}
                 direction="row"
