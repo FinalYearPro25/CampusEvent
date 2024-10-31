@@ -5,7 +5,13 @@ services:
     image: server:latest
     build:
       context: ./backend
-    command: php artisan serve --host 0.0.0.0
+    command: >
+      sh -c "
+        php artisan key:generate;
+        while ! nc -z db 5432; do sleep 1; done;
+        php artisan migrate;
+        php artisan serve --host 0.0.0.0
+      "
     env_file:
       - ./backend/.env
     ports:

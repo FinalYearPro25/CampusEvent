@@ -4,7 +4,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     libpq-dev \
-    libmcrypt-dev
+    libmcrypt-dev \
+    netcat-traditional
 
 # clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -37,7 +38,7 @@ COPY . .
 
 # Install project dependencies
 RUN composer install
-
+CMD ["create_db.sh"]
 
 EXPOSE 8000
 # Set permissions
