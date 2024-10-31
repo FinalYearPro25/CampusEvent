@@ -136,7 +136,7 @@ const Members = () => {
             Add New Group
           </Typography>
           <Grid container spacing={1}>
-            <Grid item xs={12} sm={12} md={12} key="1">
+            <Grid item xs={12} sm={12} md={12} >
               <TextField
                 id="outlined-basic"
                 label="Name"
@@ -146,7 +146,7 @@ const Members = () => {
                 onChange={(e) => setName(e.target.value)}
               />
             </Grid>
-            <Grid item xs={12} sm={12} md={12} key="1">
+            <Grid item xs={12} sm={12} md={12} >
               <TextField
                 id="outlined-basic"
                 label="E-mail"
@@ -158,7 +158,7 @@ const Members = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={12} md={12} key="1">
+            <Grid item xs={12} sm={12} md={12} >
               <Stack
                 spacing={{ xs: 1, sm: 2 }}
                 direction="row"

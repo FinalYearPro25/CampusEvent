@@ -107,7 +107,7 @@ class MembersController extends Controller
                 if ($exist != NULL)
                     return json_encode(["message" => "Cannot group assign member already exists in some event"]);
                 $data[] = array('event_id' => $event->id, 'members_id' => $member->id);
-                Mail::to($request->members_id)->send(new EventMail($member->name, $event->location, $event->title, $event->start_date, $event->end_date, $event->description,auth('sanctum')->user()->name,$this->generateUniqueString($member->id,$member->created_at),$member->id));
+                Mail::to($request->members_id)->send(new EventMail($member->name, $event->location, $event->title, $event->start_date, $event->end_date, $event->description, auth('sanctum')->user()->name, $this->generateUniqueString($member->id, $member->created_at), $member->id));
             }
         }
         DB::table('members_event')->insert($data);
@@ -138,7 +138,7 @@ class MembersController extends Controller
             if ($exist != NULL)
                 return json_encode(["message" => "Cannot assign member already exists the event"]);
             $data[] = array('event_id' => $request->event_id, 'members_id' => $member->id);
-            Mail::to($request->members_id)->send(new EventMail($member->name, $event->location, $event->title, $event->start_date, $event->end_date, $event->description,auth('sanctum')->user()->name,$this->generateUniqueString($member->id,$member->created_at),$member->id));
+            Mail::to($request->members_id)->send(new EventMail($member->name, $event->location, $event->title, $event->start_date, $event->end_date, $event->description, auth('sanctum')->user()->name, $this->generateUniqueString($member->id, $member->created_at), $member->id));
         }
         DB::table('members_event')->insert($data);
     }
@@ -160,7 +160,8 @@ class MembersController extends Controller
         return $member;
     }
 
-    public function generateUniqueString($user_id, $created_at) {
+    public function generateUniqueString($user_id, $created_at)
+    {
         // Combine user_id and created_at into one string
         $inputString = $user_id . $created_at;
 

@@ -12,10 +12,10 @@ const GroupDetail = () => {
   return (
     <Layout>
       <GroupContainer item={id} />
-      <Grid container spacing={2}>
+      <Grid container spacing={2} >
         {data &&
           data.map((item: any) => (
-            <Grid item xs={12} md={6} lg={6}  mb={2}>
+            <Grid item xs={12} md={6} lg={6}  mb={2} key={item.id}>
               <EventCard item={item} />
             </Grid>
           ))}
