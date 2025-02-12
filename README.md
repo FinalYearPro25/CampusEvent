@@ -1,5 +1,8 @@
 # Event Management System
 
+### DEMO: 
+http://3.124.218.154:3000/login
+
 ### Project Overview
 Event Management System is a full-stack web application developed to simplify and streamline the process of planning, organizing, and managing events.
 
