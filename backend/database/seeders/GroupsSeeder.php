@@ -14,9 +14,9 @@ class GroupsSeeder extends Seeder
      */
     public function run(): void
     {
-        // Group::factory()
-        //     ->count(20)
-        //     ->create();
+        Group::factory()
+            ->count(20)
+            ->create();
 
         // Group::factory()
         //     ->count(100)

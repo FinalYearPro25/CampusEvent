@@ -2,14 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Group;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Event>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Group>
  */
-class EventFactory extends Factory
+class GroupFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,15 +18,11 @@ class EventFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => $this->faker->sentence,
+            'name' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
-            'start_date' => $this->faker->date,
-            'end_date' => $this->faker->date,
-            'location' => $this->faker->address,
-            'participants_limit' => $this->faker->numberBetween(1, 100),
             'created_by' => User::factory(),
             'edited_by' => User::factory(),
-            'group_id' => Group::factory(),
+            'description' => $this->faker->paragraph,
         ];
     }
 }

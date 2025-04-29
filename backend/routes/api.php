@@ -13,13 +13,27 @@ use App\Models\UserEvent;
 //     return $request->user();
 // });
 
+Route::group([ 'middleware' => ['auth:sanctum']], function () {
+    Route::get('/events/get_all_upcoming',[EventController::class, 'getAllUpcomingEvents']);
+    Route::get('/events/get_my_upcoming_this_month/{user_id}',[EventController::class, 'getUserEventsThisMonth']);
+
+});
 Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1' ,'middleware' => ['auth:sanctum']], function () {
     Route::apiResource('groups', GroupController::class);
     Route::get('groups/getusergroup/{user_id}', [GroupController::class, 'getUserGroups']);
     Route::apiResource('events', EventController::class);
     Route::apiResource('userevents', UserEvent::class);
     Route::get('events/getuserevents/{user_id}', [UserEventController::class, 'getUserEvents']);
-    Route::get('events/getmonthlyevents/{user_id}', [UserEventController::class, 'getmonthlyevents']);
+    /********************************************************
+     * ******************************************************
+     ********************************************************/
+    Route::get('/events/get_all_upcoming',[EventController::class, 'index']);
+    // Route::get('events/get_all_upcoming',[EventController::class, 'getGroupsEvents']);
+    /********************************************************
+     * ******************************************************
+     ********************************************************/
+    // Route::get('events/getmonthlyevents/{user_id}', [UserEventController::class, 'getmonthlyevents']);
+    Route::get('events/getmonthlyevents/{user_id}', [EventController::class, 'getUserEventsThisMonth']);
 
     Route::get('events/geteventsusers/{user_id}/', [UserEventController::class, 'getEventUsers']);
     Route::get('statistics/', [UserEventController::class, 'getStatstics']);
@@ -41,7 +55,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1' ,'m
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
-Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1'], function () {
+Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1','middleware' => 'api'], function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/isLoggedIn', [AuthController::class, 'isLoggedIn']);

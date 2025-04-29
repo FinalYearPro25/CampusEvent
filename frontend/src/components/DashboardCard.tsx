@@ -25,7 +25,7 @@ export default function DashboardCard({ item, keyword }) {
       <CardActionArea>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div" align='center'>
-        {renderIcon(keyword)}
+            {renderIcon(keyword)}
           </Typography>
           <Typography gutterBottom variant="h5" component="div" align='center'>
           {item}

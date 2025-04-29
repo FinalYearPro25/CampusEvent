@@ -9,11 +9,11 @@ import "react-toastify/dist/ReactToastify.css";
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+  <>
     <ToastContainer />
     <QueryClientProvider client={queryClient}>
       <App />
       {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
-  </StrictMode>
+  </>
 );

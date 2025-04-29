@@ -24,7 +24,8 @@ class Event extends Model
 
     public function user()
     {
-        return $this->belongsToMany(User::class);
+        // return $this->belongsToMany(User::class, 'user_events', 'event_id', 'user_id');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function groups()

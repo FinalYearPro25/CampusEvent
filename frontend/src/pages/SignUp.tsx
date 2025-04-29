@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { useIsLoggedIn } from '../hooks/useGetIsLoggedIn';
 import Cookies from 'js-cookie';
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from 'react-toastify';
 
 function Copyright() {
   return (
@@ -79,8 +80,25 @@ export default function SignUp() {
         window.location.href = "/";
       },
       onError: (e) => {
-        console.log(e);
-      },
+        if (e.response) {
+          if (e.response.status === 422) {
+            const errors = e.response.data.errors;
+            const firstError = Object.values(errors)[0][0]; // Get the first error message
+            toast.error(firstError || "Validation failed.");
+          }
+      
+          if (e.response.status === 401) {
+            toast.error("Email or Password does not match.");
+          }
+      
+          if (e.response.status >= 500) {
+            toast.error("Server error. Please try again later.");
+          }
+        } else {
+          toast.error("Something went wrong. Please check your connection.");
+        }
+      }
+      
     });
   };
 

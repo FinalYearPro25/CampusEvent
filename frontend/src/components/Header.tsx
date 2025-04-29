@@ -78,21 +78,21 @@ function ResponsiveAppBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Link href="/">
-        <Box
-  component="img"
-  sx={{
-    height: 60,
-    width: 60,
-    maxHeight: { xs: 233, md: 167 },
-    maxWidth: { xs: 350, md: 250 },
-    marginRight: 2,
-    marginLeft:-2
+            <Box
+              component="img"
+              sx={{
+                height: 70,
+                width: 70,
+                maxHeight: { xs: 233, md: 167 },
+                maxWidth: { xs: 350, md: 250 },
+                marginRight: 2,
+                marginLeft:-2
 
-  }}
-  alt="Eventryx"
-  src={logo}
-/>
-</Link>
+              }}
+              alt="Eventify"
+              src={logo}
+            />
+          </Link>
           <Typography
             variant="h6"
             noWrap
@@ -108,7 +108,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            Eventryx
+            {/* Eventify */}
           </Typography>
             {(user.isLoggedIn==true)? (
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -167,7 +167,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            Eventryx
+            Eventify
           </Typography>
           {(user.isLoggedIn==true)? (
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
@@ -188,7 +188,17 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={user.email} src="/static/images/avatar/2.jpg" />
+                {/* <Avatar alt={user.email} src="/static/images/avatar/2.jpg" /> */}
+                <img
+                  src="/avatar.png"
+                  alt={user.email}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: '100%',
+                    objectFit: 'cover'
+                  }}
+                /> 
               </IconButton>
             </Tooltip>
             <Menu
@@ -207,30 +217,43 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-                <MenuItem onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">
-                    {" "}
-                    <Link
-                    style={{ color: 'black', textDecoration: 'none'}}
-                      href={user.url}
-                      variant="body2"
-                    >
-                      Event Calander
-                    </Link>
-                  </Typography>
-                  </MenuItem>
-                  <MenuItem>
-                  <Typography textAlign="center">
-                    {" "}
-                    <Link
-                    style={{ color: 'black', textDecoration: 'none'}}
-                      onClick={handelLogout}
-                      variant="body2"
-                    >
-                      Logout
-                    </Link>
-                  </Typography>
 
+                <MenuItem >
+                  <Typography textAlign="center">
+                      {" "}
+                      <Link
+                      style={{ color: 'black', textDecoration: 'none'}}
+                        href={'#'}
+                        variant="body2"
+                      >
+                        {/* {user.name} */}
+                         <small>{user.email}</small>
+                      </Link>
+                    </Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">
+                      {" "}
+                      <Link
+                      style={{ color: 'black', textDecoration: 'none'}}
+                        href={user.url}
+                        variant="body2"
+                      >
+                        Event Calander
+                      </Link>
+                    </Typography>
+                </MenuItem>
+                <MenuItem>
+                    <Typography textAlign="center">
+                      {" "}
+                      <Link
+                      style={{ color: 'black', textDecoration: 'none'}}
+                        onClick={handelLogout}
+                        variant="body2"
+                      >
+                        Logout
+                      </Link>
+                    </Typography>
                 </MenuItem>
             </Menu>
           </Box>

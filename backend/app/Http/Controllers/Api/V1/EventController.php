@@ -10,6 +10,7 @@ use App\Http\Resources\v1\EventCollection;
 use App\Http\Resources\v1\EventResource;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Api\V1\MembersController;
+use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
@@ -89,6 +90,52 @@ class EventController extends Controller
 
         return $users;
     }
+
+
+    public function getAllUpcomingEvents(){
+        $userId = Auth::id(); // or Auth::user()->id
+
+        $events = Event::with('user')->where('created_by', '!=', $userId)->where('start_date', '>=', now()) 
+            ->get();
+
+
+    //     $events = DB::table('events')
+    // ->where('created_by', '!=', $userId)
+    // ->where('start_date', '>=', now()) 
+    // // ->orderBy('start_date', 'asc')
+    // ->get();
+
+
+
+
+//         $events = DB::select("
+//     SELECT * FROM events 
+//     WHERE created_by != ? 
+//     AND start_date >= NOW()
+// ", [$userId]);
+
+
+    
+        return response()->json($events);
+    }
+
+
+
+    public function getUserEventsThisMonth($userId)
+{
+    $currentMonth = now()->month; // Get the current month
+    $currentYear = now()->year; // Get the current year
+
+    $events = DB::table('user_events as ue')
+        ->join('events as e', 'ue.event_id', '=', 'e.id')
+        ->where('ue.user_id', $userId)
+        ->whereMonth('e.start_date', $currentMonth) // Filter by current month
+        ->whereYear('e.start_date', $currentYear) // Filter by current year
+        ->select('e.*') // Select all columns from the events table
+        ->get();
+
+    return $events;
+}
 
     public function countEvents(){
         $events = Event::where('created_by','=',auth('sanctum')->user()->id)->count();

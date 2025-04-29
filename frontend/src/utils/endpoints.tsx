@@ -2,42 +2,42 @@ export const API_ENDPOINTS = {
     // Auth
     LOGIN : "/login",
     // Is Logged In
-    IS_LOGIN : "/isLoggedIn",
+    IS_LOGIN : "v1/isLoggedIn",
     // Create User
     REGISTER : "/register",
     // Get Groups
-    GROUPS : "/groups/getusergroup",
+    GROUPS : "v1/groups/getusergroup",
     // Logout
-    LOGOUT : "/logout",
+    LOGOUT : "v1/logout",
 
     // Group Detail
-    GROUP_DETAIL : "/groups",
+    GROUP_DETAIL : "v1/groups",
 
     // Create Group
-    CREATE_GROUP : "/groups",
+    CREATE_GROUP : "v1/groups",
 
     // User Events
-    EVENTS : "/events/getGroupEvents",
+    EVENTS : "v1/events/getGroupEvents",
 
     // create event
-    CREATE_EVENT : "/events",
+    CREATE_EVENT : "v1/events",
 
     // Memebers related to user
-    USER_MEMEBERS : "/members/getMembersByUser",
+    USER_MEMEBERS : "v1/members/getMembersByUser",
 
-    CREATE_MEMBERS_GROUP: "/membersGroup",
-    CREATE_MEMBERS_EVENT: "/membersEvent",
+    CREATE_MEMBERS_GROUP: "v1/membersGroup",
+    CREATE_MEMBERS_EVENT: "v1/membersEvent",
 
 
-    MEMBERS : "/members",
+    MEMBERS : "v1/members",
 
-    STATISTICS: "/statistics",
+    STATISTICS: "v1/statistics",
 
-    USER_EVENTS: "events/getuserevents",
+    USER_EVENTS: "v1/events/getuserevents",
 
-    USER_EVENTS_MONTHLY: "events/getmonthlyevents",
+    USER_EVENTS_MONTHLY: "v1/events/getmonthlyevents",
 
-    CALANDER_EVENT: "getCalnderEvent"
+    CALANDER_EVENT: "v1/getCalnderEvent"
 
 
 
