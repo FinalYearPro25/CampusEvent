@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  Grid,
   Table,
   TableBody,
   TableCell,
@@ -13,51 +12,79 @@ import {
   TablePagination,
   IconButton,
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
 } from "@mui/material";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { useTheme } from "@mui/material/styles";
-import { useGetStatistics } from "../hooks/useGetStatistics";
-import DashboardCard from "./DashboardCard";
 import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
-import EventTable from "./EventTable";
-import { useGetUserEventsMonthly } from "../hooks/useGetUserEventsMonthly";
-import { useGetUpcomingEvents } from "../hooks/useGetUpcomingEvents"; // ✅ new hook
-import { Link } from "react-router-dom";
-
-const month = [
-  "January", "February", "March", "April", "May", "June", "July",
-  "August", "September", "October", "November", "December"
-];
-const d = new Date();
-const monthname = month[d.getMonth()];
+import { useGetUserCreatedEvents } from "../hooks/useGetUserCreatedEvents";
+import axios from "axios";
+import requests from "../utils/requests";
 
 const DashboardContent = () => {
   const { data: user, isLoading: isUserLoading } = useIsLoggedIn();
-  const { data: stat, isLoading: isStatLoading } = useGetStatistics();
-  const { data: monthlyEvents = [], isLoading: isEventLoading } = useGetUserEventsMonthly(user?.user_id);
-  const { data: upcomingEvents = [], isLoading: isUpcomingLoading } = useGetUpcomingEvents(); // ✅
+  const { data: events = [], isLoading: isEventLoading } = useGetUserCreatedEvents();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const theme = useTheme();
 
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    start_date: "",
+    end_date: "",
+    location: "",
+    participants_limit: "",
+  });
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const payload = {
+        ...formData,
+        participants_limit: Number(formData.participants_limit),
+        group_id: 5, // default group ID
+      };
+      await requests.post("/events/save_event", payload);
+      alert("Event created successfully!");
+      handleClose();
+      window.location.reload(); // optional: can replace with data refresh logic
+    } catch (error) {
+      console.error(error);
+      alert("Failed to create event.");
+    }
+  };
+
   const formatDateTime = (datetime: string) => {
-    return new Date(datetime).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
+    return new Date(datetime).toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
       hour12: true,
     });
   };
 
-  const emptyRows = page > 0
-    ? Math.max(0, (1 + page) * rowsPerPage - upcomingEvents.length)
-    : 0;
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - events.length) : 0;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -75,12 +102,15 @@ const DashboardContent = () => {
     count,
     page,
     rowsPerPage,
-    onPageChange
+    onPageChange,
   }: {
     count: number;
     page: number;
     rowsPerPage: number;
-    onPageChange: (event: React.MouseEvent<HTMLButtonElement>, newPage: number) => void;
+    onPageChange: (
+      event: React.MouseEvent<HTMLButtonElement>,
+      newPage: number
+    ) => void;
   }) => (
     <Box sx={{ flexShrink: 0, ml: 2.5 }}>
       <IconButton
@@ -105,7 +135,9 @@ const DashboardContent = () => {
         {theme.direction === "rtl" ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
       </IconButton>
       <IconButton
-        onClick={(e) => onPageChange(e, Math.max(0, Math.ceil(count / rowsPerPage) - 1))}
+        onClick={(e) =>
+          onPageChange(e, Math.max(0, Math.ceil(count / rowsPerPage) - 1))
+        }
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="last page"
       >
@@ -114,22 +146,36 @@ const DashboardContent = () => {
     </Box>
   );
 
-  if (isStatLoading || isUserLoading || isEventLoading || isUpcomingLoading) {
+  if (isUserLoading || isEventLoading) {
     return <div>Loading...</div>;
   }
 
   return (
     <>
-    
-
-      {/* <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
-        Events for {monthname}
-      </Typography>
-      <EventTable events={{ data: monthlyEvents }} /> */}
-
       <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
-        Upcoming Events Table
+        Events Created By Me
       </Typography>
+
+      <Button variant="contained" color="primary" onClick={handleOpen} sx={{ mb: 2 }}>
+        Create Event
+      </Button>
+
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Create New Event</DialogTitle>
+        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+          <TextField name="title" label="Title" value={formData.title} onChange={handleInputChange} required />
+          <TextField name="description" label="Description" value={formData.description} onChange={handleInputChange} multiline rows={2} />
+          <TextField name="start_date" label="Start Date" type="datetime-local" value={formData.start_date} onChange={handleInputChange} InputLabelProps={{ shrink: true }} required />
+          <TextField name="end_date" label="End Date" type="datetime-local" value={formData.end_date} onChange={handleInputChange} InputLabelProps={{ shrink: true }} required />
+          <TextField name="location" label="Location" value={formData.location} onChange={handleInputChange} />
+          <TextField name="participants_limit" label="Participants Limit" type="number" value={formData.participants_limit} onChange={handleInputChange} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmit} variant="contained" color="primary">Create</Button>
+        </DialogActions>
+      </Dialog>
+
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="pagination table">
           <TableHead>
@@ -144,11 +190,8 @@ const DashboardContent = () => {
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? upcomingEvents.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                )
-              : upcomingEvents
+              ? events.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : events
             ).map((event: any) => (
               <TableRow key={event.id}>
                 <TableCell>{event.id}</TableCell>
@@ -170,7 +213,7 @@ const DashboardContent = () => {
               <TablePagination
                 rowsPerPageOptions={[25, 50, 100, { label: "All", value: -1 }]}
                 colSpan={6}
-                count={upcomingEvents.length}
+                count={events.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

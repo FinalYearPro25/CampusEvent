@@ -10,6 +10,7 @@ use App\Http\Resources\v1\EventCollection;
 use App\Http\Resources\v1\EventResource;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Api\V1\MembersController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
@@ -118,6 +119,55 @@ class EventController extends Controller
     
         return response()->json($events);
     }
+
+
+
+
+    
+    public function getEventsByMe(){
+        $userId = Auth::id(); // or Auth::user()->id
+
+        $events = Event::where('created_by', $userId) 
+            ->get();
+
+    
+        return response()->json($events);
+    }
+
+
+    public function saveEvent(Request $request)
+{
+    $validatedData = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:start_date',
+        'location' => 'nullable|string|max:255',
+        'participants_limit' => 'nullable|integer|min:1',
+        'group_id' => 'nullable|integer|exists:groups,id',
+    ]);
+
+    $userId = Auth::id();
+
+    $event = Event::create([
+        'title' => $validatedData['title'],
+        'description' => $validatedData['description'] ?? null,
+        'start_date' => $validatedData['start_date'],
+        'end_date' => $validatedData['end_date'],
+        'location' => $validatedData['location'] ?? null,
+        'participants_limit' => $validatedData['participants_limit'] ?? null,
+        'group_id' => $validatedData['group_id'] ?? 5, // 👈 Default to 5
+        'created_by' => $userId,
+        'edited_by' => $userId,
+    ]);
+
+    return response()->json([
+        'message' => 'Event created successfully.',
+        'event' => $event,
+    ], 201);
+}
+
+    
 
 
 

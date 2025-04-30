@@ -27,7 +27,8 @@ const pages = [
   },
   {
     name: "My Events",
-    linkTo: "/events",
+    linkTo: "/my-events",
+    // linkTo: "/events",
   },
   {
     name: "Attending",
