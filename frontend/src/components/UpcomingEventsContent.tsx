@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  Grid,
   Table,
   TableBody,
   TableCell,
@@ -19,45 +18,56 @@ import LastPageIcon from "@mui/icons-material/LastPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { useTheme } from "@mui/material/styles";
-import { useGetStatistics } from "../hooks/useGetStatistics";
-import DashboardCard from "./DashboardCard";
-import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
-import EventTable from "./EventTable";
-import { useGetUserEventsMonthly } from "../hooks/useGetUserEventsMonthly";
-import { useGetUpcomingEvents } from "../hooks/useGetUpcomingEvents"; // ✅ new hook
-import { Link } from "react-router-dom";
-
-const month = [
-  "January", "February", "March", "April", "May", "June", "July",
-  "August", "September", "October", "November", "December"
-];
-const d = new Date();
-const monthname = month[d.getMonth()];
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const DashboardContent = () => {
-  const { data: user, isLoading: isUserLoading } = useIsLoggedIn();
-  const { data: stat, isLoading: isStatLoading } = useGetStatistics();
-  const { data: monthlyEvents = [], isLoading: isEventLoading } = useGetUserEventsMonthly(user?.user_id);
-  const { data: upcomingEvents = [], isLoading: isUpcomingLoading } = useGetUpcomingEvents(); // ✅
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const theme = useTheme();
 
+  useEffect(() => {
+    const fetchUpcomingEvents = async () => {
+      try {
+        const token = Cookies.get("token");
+
+        const response = await axios.get("http://localhost:8000/api/events/get_all_upcoming", {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = response?.data ?? [];
+        if (!Array.isArray(data)) throw new Error("Expected an array of events");
+
+        setUpcomingEvents(data);
+      } catch (error) {
+        console.error("Failed to fetch upcoming events:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUpcomingEvents();
+  }, []);
+
   const formatDateTime = (datetime: string) => {
-    return new Date(datetime).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
+    return new Date(datetime).toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
       hour12: true,
     });
   };
 
-  const emptyRows = page > 0
-    ? Math.max(0, (1 + page) * rowsPerPage - upcomingEvents.length)
-    : 0;
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - upcomingEvents.length) : 0;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -75,12 +85,15 @@ const DashboardContent = () => {
     count,
     page,
     rowsPerPage,
-    onPageChange
+    onPageChange,
   }: {
     count: number;
     page: number;
     rowsPerPage: number;
-    onPageChange: (event: React.MouseEvent<HTMLButtonElement>, newPage: number) => void;
+    onPageChange: (
+      event: React.MouseEvent<HTMLButtonElement>,
+      newPage: number
+    ) => void;
   }) => (
     <Box sx={{ flexShrink: 0, ml: 2.5 }}>
       <IconButton
@@ -105,7 +118,9 @@ const DashboardContent = () => {
         {theme.direction === "rtl" ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
       </IconButton>
       <IconButton
-        onClick={(e) => onPageChange(e, Math.max(0, Math.ceil(count / rowsPerPage) - 1))}
+        onClick={(e) =>
+          onPageChange(e, Math.max(0, Math.ceil(count / rowsPerPage) - 1))
+        }
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="last page"
       >
@@ -114,22 +129,14 @@ const DashboardContent = () => {
     </Box>
   );
 
-  if (isStatLoading || isUserLoading || isEventLoading || isUpcomingLoading) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <div>Loading...</div>;
 
   return (
     <>
-    
-
-      {/* <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
-        Events for {monthname}
-      </Typography>
-      <EventTable events={{ data: monthlyEvents }} /> */}
-
       <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
         Upcoming Events Table
       </Typography>
+
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="pagination table">
           <TableHead>
@@ -144,10 +151,7 @@ const DashboardContent = () => {
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? upcomingEvents.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                )
+              ? upcomingEvents.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : upcomingEvents
             ).map((event: any) => (
               <TableRow key={event.id}>

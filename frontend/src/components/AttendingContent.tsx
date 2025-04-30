@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Cookies from 'js-cookie';
 import {
   Table,
   TableBody,
@@ -31,7 +32,14 @@ const DashboardContent = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get("/events/get_events_attending");
+        const token = Cookies.get("token");
+
+      const response = await axios.get("http://localhost:8000/api/events/get_events_attending", {
+        headers: {
+            Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
         const data = response?.data ?? [];
         if (!Array.isArray(data)) throw new Error("Expected an array of events");
         setEvents(data);
@@ -131,7 +139,7 @@ const DashboardContent = () => {
         <Table sx={{ minWidth: 650 }} aria-label="pagination table">
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
+              {/* <TableCell>ID</TableCell> */}
               <TableCell>Title</TableCell>
               <TableCell>Start Date</TableCell>
               <TableCell>End Date</TableCell>
@@ -145,7 +153,7 @@ const DashboardContent = () => {
               : events
             ).map((event: any) => (
               <TableRow key={event.id}>
-                <TableCell>{event.id}</TableCell>
+                {/* <TableCell>{event.id}</TableCell> */}
                 <TableCell>{event.title}</TableCell>
                 <TableCell>{formatDateTime(event.start_date)}</TableCell>
                 <TableCell>{formatDateTime(event.end_date)}</TableCell>
