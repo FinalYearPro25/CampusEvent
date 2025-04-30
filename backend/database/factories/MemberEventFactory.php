@@ -19,8 +19,8 @@ class MemberEventFactory extends Factory
     public function definition(): array
     {
         return [
-            'event_id' => Event::inRandomOrder()->first()->id, // Pick a random event that exists
-        'members_id' => User::inRandomOrder()->first()->id, // Generate a random User (or manually assign if you have specific users)
+        //     'event_id' => Event::inRandomOrder()->first()->id, // Pick a random event that exists
+        // 'members_id' => User::inRandomOrder()->first()->id, // Generate a random User (or manually assign if you have specific users)
         ];
     }
 }
