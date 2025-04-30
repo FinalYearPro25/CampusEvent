@@ -11,6 +11,7 @@ import Members from './pages/Members';
 import Events from './pages/Events';
 import NotFound from './pages/NotFound';
 import MemberEvents from './pages/MemberEvent';
+import UpcomingEvents from './pages/UpcomingEvents';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/event/:id" element={<ProtectedRoute><EventDetail /></ProtectedRoute>}></Route>
 
           <Route path="/members" element={<ProtectedRoute><Members /></ProtectedRoute>}></Route>
+          <Route path="/upcoming-events" element={<ProtectedRoute><UpcomingEvents /></ProtectedRoute>}></Route>
           <Route path="*" element={<NotFound />} />
 
 

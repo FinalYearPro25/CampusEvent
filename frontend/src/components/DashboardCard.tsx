@@ -10,11 +10,11 @@ import { Link } from 'react-router-dom';
 const renderIcon = (keyword) =>{
     switch (keyword) {
         case "members":
-            return ( <div ><GroupIcon style={{ marginRight: '8px', verticalAlign: 'middle' , fontSize: "40px" }} /> <span style={{ fontWeight: "bold"}}>Total Members</span> </div>) ;
+            return ( <div ><GroupIcon style={{ marginRight: '8px', verticalAlign: 'middle' , fontSize: "40px" }} /> <span style={{ fontWeight: "bold"}}>Total Requests</span> </div>) ;
         case "events":
-            return ( <div ><DateRangeIcon style={{ marginRight: '8px', verticalAlign: 'middle'  , fontSize: "40px"  }} /> <span style={{ fontWeight: "bold"}} >Total Events</span> </div>) ;
+            return ( <div ><DateRangeIcon style={{ marginRight: '8px', verticalAlign: 'middle'  , fontSize: "40px"  }} /> <span style={{ fontWeight: "bold"}} >My Events</span> </div>) ;
         case "groups":
-            return ( <div ><DynamicFeedIcon style={{ marginRight: '8px', verticalAlign: 'middle'  , fontSize: "40px" }} /> <span style={{ fontWeight: "bold"}}>Total Groups</span> </div>) ;
+            return ( <div ><DynamicFeedIcon style={{ marginRight: '8px', verticalAlign: 'middle'  , fontSize: "40px" }} /> <span style={{ fontWeight: "bold"}}>Total Attending</span> </div>) ;
     }
 }
 

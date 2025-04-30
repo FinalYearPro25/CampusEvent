@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: '#68ad68',
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -154,7 +154,7 @@ export default function SignIn() {
               </Link>
             </Grid>
           </Grid>
-          <Grid container spacing={1}>
+          {/* <Grid container spacing={1}>
             <Grid item xs={12}>
               <h3>Demo user and password</h3>
             </Grid>
@@ -164,7 +164,7 @@ export default function SignIn() {
             <Grid item xs={12}>
             Password: eventryx
             </Grid>
-          </Grid>
+          </Grid> */}
         </form>
       </div>
       <Box mt={100}>

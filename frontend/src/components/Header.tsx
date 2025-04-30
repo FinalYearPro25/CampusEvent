@@ -21,15 +21,20 @@ import logo from '../assets/logo.png';
 // const pages = ["Groups", "Events", "Members"];
 const pages = [
   {
-    name: "Groups",
-    linkTo: "/groups",
+    name: "Upcoming EVents",
+    linkTo: "/upcoming-events",
+    // linkTo: "/groups",
   },
   {
-    name: "Events",
+    name: "My Events",
     linkTo: "/events",
   },
   {
-    name: "Memebers",
+    name: "Attending",
+    linkTo: "/members",
+  },
+  {
+    name: "Requests",
     linkTo: "/members",
   },
 ];
@@ -74,7 +79,7 @@ function ResponsiveAppBar() {
 
 
   return (
-    <AppBar style={{ backgroundColor: '#9868ad'}} position="static" sx={{mb:5}}>
+    <AppBar style={{ backgroundColor: '#68ad68'}} position="static" sx={{mb:5}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Link href="/">
@@ -167,7 +172,8 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            Eventify
+            Fountain University Event Management System
+            {/* //Eventify  */}
           </Typography>
           {(user.isLoggedIn==true)? (
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
