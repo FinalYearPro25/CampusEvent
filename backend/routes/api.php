@@ -18,6 +18,7 @@ Route::group([ 'middleware' => ['auth:sanctum']], function () {
     Route::get('/events/get_my_upcoming_this_month/{user_id}',[EventController::class, 'getUserEventsThisMonth']);
     Route::get('/events/get_events_by_me',[EventController::class, 'getEventsByMe']);
     Route::post('/events/save_event',[EventController::class, 'saveEvent']);
+    Route::get('/events/get_events_attending',[EventController::class, 'getEventsAttending']);
 
 });
 Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1' ,'middleware' => ['auth:sanctum']], function () {

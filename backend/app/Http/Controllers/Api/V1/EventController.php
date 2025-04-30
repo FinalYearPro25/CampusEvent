@@ -167,6 +167,22 @@ class EventController extends Controller
     ], 201);
 }
 
+
+public function getEventsAttending()
+{
+    $userId = Auth::id();
+
+    $events = DB::table('user_events')
+        ->join('events', 'user_events.event_id', '=', 'events.id')
+        ->where('user_events.user_id', $userId)
+        ->where('user_events.status', 1)
+        ->select('events.*') // Add more columns if needed
+        ->get();
+
+    return response()->json($events);
+}
+
+
     
 
 

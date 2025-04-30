@@ -32,7 +32,8 @@ const pages = [
   },
   {
     name: "Attending",
-    linkTo: "/members",
+    linkTo: "/attending",
+    // linkTo: "/members",
   },
   {
     name: "Requests",

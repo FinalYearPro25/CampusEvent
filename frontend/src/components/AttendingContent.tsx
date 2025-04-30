@@ -12,65 +12,38 @@ import {
   TablePagination,
   IconButton,
   Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
 } from "@mui/material";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { useTheme } from "@mui/material/styles";
-import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
-import { useGetUserCreatedEvents } from "../hooks/useGetUserCreatedEvents";
 import axios from "axios";
-import requests from "../utils/requests";
 
-const MyEventContent = () => {
-  const { data: user, isLoading: isUserLoading } = useIsLoggedIn();
-  const { data: events = [], isLoading: isEventLoading } = useGetUserCreatedEvents();
-
+const DashboardContent = () => {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const theme = useTheme();
 
-  const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    start_date: "",
-    end_date: "",
-    location: "",
-    participants_limit: "",
-  });
+  // Fetch events the user is attending (status = 1 in user_events)
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get("/events/get_events_attending");
+        const data = response?.data ?? [];
+        if (!Array.isArray(data)) throw new Error("Expected an array of events");
+        setEvents(data);
+      } catch (error) {
+        console.error("Failed to fetch attending events:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async () => {
-    try {
-      const payload = {
-        ...formData,
-        participants_limit: Number(formData.participants_limit),
-        group_id: 5, // default group ID
-      };
-      await requests.post("/events/save_event", payload);
-      alert("Event created successfully!");
-      handleClose();
-      window.location.reload(); // optional: can replace with data refresh logic
-    } catch (error) {
-      console.error(error);
-      alert("Failed to create event.");
-    }
-  };
+    fetchEvents();
+  }, []);
 
   const formatDateTime = (datetime: string) => {
     return new Date(datetime).toLocaleString("en-US", {
@@ -146,35 +119,13 @@ const MyEventContent = () => {
     </Box>
   );
 
-  if (isUserLoading || isEventLoading) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <div>Loading...</div>;
 
   return (
     <>
       <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
-        Events Created By Me
+        Events You're Attending
       </Typography>
-
-      <Button variant="contained" color="primary" onClick={handleOpen} sx={{ mb: 2 }}>
-        Create Event
-      </Button>
-
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Create New Event</DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
-          <TextField name="title" label="Title" value={formData.title} onChange={handleInputChange} required />
-          <TextField name="description" label="Description" value={formData.description} onChange={handleInputChange} multiline rows={2} />
-          <TextField name="start_date" label="Start Date" type="datetime-local" value={formData.start_date} onChange={handleInputChange} InputLabelProps={{ shrink: true }} required />
-          <TextField name="end_date" label="End Date" type="datetime-local" value={formData.end_date} onChange={handleInputChange} InputLabelProps={{ shrink: true }} required />
-          <TextField name="location" label="Location" value={formData.location} onChange={handleInputChange} />
-          <TextField name="participants_limit" label="Participants Limit" type="number" value={formData.participants_limit} onChange={handleInputChange} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained" color="primary">Create</Button>
-        </DialogActions>
-      </Dialog>
 
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="pagination table">
@@ -228,4 +179,4 @@ const MyEventContent = () => {
   );
 };
 
-export default MyEventContent;
+export default DashboardContent;

@@ -13,6 +13,7 @@ import NotFound from './pages/NotFound';
 import MemberEvents from './pages/MemberEvent';
 import UpcomingEvents from './pages/UpcomingEvents';
 import MyEvents from './pages/MyEvents';
+import Attending from './pages/Attending';
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
           <Route path="/members" element={<ProtectedRoute><Members /></ProtectedRoute>}></Route>
           <Route path="/upcoming-events" element={<ProtectedRoute><UpcomingEvents /></ProtectedRoute>}></Route>
           <Route path="/my-events" element={<ProtectedRoute><MyEvents /></ProtectedRoute>}></Route>
+          <Route path="/attending" element={<ProtectedRoute><Attending /></ProtectedRoute>}></Route>
           <Route path="*" element={<NotFound />} />
 
 

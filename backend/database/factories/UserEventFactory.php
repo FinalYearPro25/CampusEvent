@@ -21,6 +21,7 @@ class UserEventFactory extends Factory
         return [
             'user_id' => User::factory(),
             'event_id' => Event::factory(),
+            // 'status' => 1,
         ];
     }
 }
