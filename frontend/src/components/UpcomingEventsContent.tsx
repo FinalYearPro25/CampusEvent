@@ -12,11 +12,13 @@ import {
   TablePagination,
   IconButton,
   Box,
+  Button,
 } from "@mui/material";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import SendIcon from "@mui/icons-material/Send";
 import { useTheme } from "@mui/material/styles";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -29,31 +31,57 @@ const DashboardContent = () => {
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const theme = useTheme();
 
-  useEffect(() => {
-    const fetchUpcomingEvents = async () => {
-      try {
-        const token = Cookies.get("token");
+  const fetchUpcomingEvents = async () => {
+    try {
+      const token = Cookies.get("token");
 
-        const response = await axios.get("http://localhost:8000/api/events/get_all_upcoming", {
+      const response = await axios.get("http://localhost:8000/api/events/get_all_upcoming", {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = response?.data ?? [];
+      if (!Array.isArray(data)) throw new Error("Expected an array of events");
+
+      setUpcomingEvents(data);
+    } catch (error) {
+      console.error("Failed to fetch upcoming events:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+
+    fetchUpcomingEvents();
+  }, []);
+
+  const handleRequestToAttend = async (eventId: number) => {
+    const confirmed = window.confirm("Are you sure you want to send a request to attend this event?");
+    if (!confirmed) return;
+
+    try {
+      const token = Cookies.get("token");
+
+      await axios.post(
+        "http://localhost:8000/api/events/request_to_attend",
+        { event_id: eventId },
+        {
           headers: {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
           },
-        });
+        }
+      );
 
-        const data = response?.data ?? [];
-        if (!Array.isArray(data)) throw new Error("Expected an array of events");
-
-        setUpcomingEvents(data);
-      } catch (error) {
-        console.error("Failed to fetch upcoming events:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUpcomingEvents();
-  }, []);
+      fetchUpcomingEvents();
+      alert("Request sent successfully!");
+    } catch (error) {
+      console.error("Failed to send request:", error);
+      alert("Failed to send request. Please try again.");
+    }
+  };
 
   const formatDateTime = (datetime: string) => {
     return new Date(datetime).toLocaleString("en-US", {
@@ -141,12 +169,13 @@ const DashboardContent = () => {
         <Table sx={{ minWidth: 650 }} aria-label="pagination table">
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
+              {/* <TableCell>ID</TableCell> */}
               <TableCell>Title</TableCell>
               <TableCell>Start Date</TableCell>
               <TableCell>End Date</TableCell>
               <TableCell>Location</TableCell>
               <TableCell>Participants Limit</TableCell>
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -155,17 +184,37 @@ const DashboardContent = () => {
               : upcomingEvents
             ).map((event: any) => (
               <TableRow key={event.id}>
-                <TableCell>{event.id}</TableCell>
+                {/* <TableCell>{event.id}</TableCell> */}
                 <TableCell>{event.title}</TableCell>
                 <TableCell>{formatDateTime(event.start_date)}</TableCell>
                 <TableCell>{formatDateTime(event.end_date)}</TableCell>
                 <TableCell>{event.location}</TableCell>
                 <TableCell>{event.participants_limit}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    startIcon={<SendIcon fontSize="small" />}
+                    onClick={() => handleRequestToAttend(event.id)}
+                    sx={{
+                      backgroundColor: "green",
+                      color: "#fff",
+                      fontSize: "0.45rem",fontWeight:'bold',
+                      padding: "4px 8px",
+                      minWidth: "unset",
+                      "&:hover": {
+                        backgroundColor: "darkgreen",
+                      },
+                    }}
+                  >
+                    Request to Attend
+                  </Button>
+                </TableCell>
+
               </TableRow>
             ))}
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={6} />
+                <TableCell colSpan={7} />
               </TableRow>
             )}
           </TableBody>
@@ -173,7 +222,7 @@ const DashboardContent = () => {
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[25, 50, 100, { label: "All", value: -1 }]}
-                colSpan={6}
+                colSpan={7}
                 count={upcomingEvents.length}
                 rowsPerPage={rowsPerPage}
                 page={page}

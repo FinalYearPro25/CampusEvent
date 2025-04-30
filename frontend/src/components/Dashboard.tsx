@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import SendIcon from "@mui/icons-material/Send";
 import {
   Grid,
   Typography,
@@ -13,6 +14,7 @@ import {
   TablePagination,
   IconButton,
   Box,
+  Button,
 } from "@mui/material";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import LastPageIcon from "@mui/icons-material/LastPage";
@@ -46,27 +48,53 @@ const DashboardContent = () => {
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const theme = useTheme();
 
+  const fetchUpcomingEvents = async () => {
+    try {
+      const token = Cookies.get("token");
+      const response = await axios.get("http://localhost:8000/api/events/get_all_upcoming", {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = response?.data ?? [];
+      if (!Array.isArray(data)) throw new Error("Expected an array of events");
+      setUpcomingEvents(data);
+    } catch (error) {
+      console.error("Failed to fetch upcoming events:", error);
+    } finally {
+      setLoadingUpcoming(false);
+    }
+  };
   useEffect(() => {
-    const fetchUpcomingEvents = async () => {
-      try {
-        const token = Cookies.get("token");
-        const response = await axios.get("http://localhost:8000/api/events/get_all_upcoming", {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = response?.data ?? [];
-        if (!Array.isArray(data)) throw new Error("Expected an array of events");
-        setUpcomingEvents(data);
-      } catch (error) {
-        console.error("Failed to fetch upcoming events:", error);
-      } finally {
-        setLoadingUpcoming(false);
-      }
-    };
     fetchUpcomingEvents();
   }, []);
+
+
+   const handleRequestToAttend = async (eventId: number) => {
+      const confirmed = window.confirm("Are you sure you want to send a request to attend this event?");
+      if (!confirmed) return;
+  
+      try {
+        const token = Cookies.get("token");
+  
+        await axios.post(
+          "http://localhost:8000/api/events/request_to_attend",
+          { event_id: eventId },
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        fetchUpcomingEvents();
+        alert("Request sent successfully!");
+      } catch (error) {
+        console.error("Failed to send request:", error);
+        alert("Failed to send request. Please try again.");
+      }
+    };
 
   const formatDateTime = (datetime: string) =>
     new Date(datetime).toLocaleString("en-US", {
@@ -184,6 +212,25 @@ const DashboardContent = () => {
                     <TableCell>{formatDateTime(event.end_date)}</TableCell>
                     <TableCell>{event.location}</TableCell>
                     <TableCell>{event.participants_limit}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        startIcon={<SendIcon fontSize="small" />}
+                        onClick={() => handleRequestToAttend(event.id)}
+                        sx={{
+                          backgroundColor: "green",
+                          color: "#fff",
+                          fontSize: "0.45rem",fontWeight:'bold',
+                          padding: "4px 8px",
+                          minWidth: "unset",
+                          "&:hover": {
+                            backgroundColor: "darkgreen",
+                          },
+                        }}
+                      >
+                        Request to Attend
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
                 {emptyRows > 0 && (

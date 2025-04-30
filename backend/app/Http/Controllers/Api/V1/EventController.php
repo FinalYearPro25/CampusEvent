@@ -10,6 +10,7 @@ use App\Http\Resources\v1\EventCollection;
 use App\Http\Resources\v1\EventResource;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Api\V1\MembersController;
+use App\Models\UserEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -93,32 +94,47 @@ class EventController extends Controller
     }
 
 
-    public function getAllUpcomingEvents(){
-        $userId = Auth::id(); // or Auth::user()->id
+    // public function getAllUpcomingEvents(){
+    //     $userId = Auth::id(); // or Auth::user()->id
 
-        $events = Event::with('user')->where('created_by', '!=', $userId)->where('start_date', '>=', now()) 
-            ->get();
-
-
-    //     $events = DB::table('events')
-    // ->where('created_by', '!=', $userId)
-    // ->where('start_date', '>=', now()) 
-    // // ->orderBy('start_date', 'asc')
-    // ->get();
+    //     $events = Event::with('user')->where('created_by', '!=', $userId)->where('start_date', '>=', now()) 
+    //         ->get();
 
 
+    //     //     $events = DB::table('events')
+    //     // ->where('created_by', '!=', $userId)
+    //     // ->where('start_date', '>=', now()) 
+    //     // // ->orderBy('start_date', 'asc')
+    //     // ->get();
 
-
-//         $events = DB::select("
-//     SELECT * FROM events 
-//     WHERE created_by != ? 
-//     AND start_date >= NOW()
-// ", [$userId]);
+    //     //         $events = DB::select("
+    //     //     SELECT * FROM events 
+    //     //     WHERE created_by != ? 
+    //     //     AND start_date >= NOW()
+    //     // ", [$userId]);
 
 
     
-        return response()->json($events);
-    }
+    //     return response()->json($events);
+    // }
+
+    public function getAllUpcomingEvents()
+{
+    $userId = Auth::id();
+
+    // Get list of event IDs the user already requested
+    $requestedEventIds = UserEvent::where('user_id', $userId)
+        ->pluck('event_id');
+
+    // Get upcoming events NOT created by user AND NOT already requested
+    $events = Event::with('user')
+        ->where('created_by', '!=', $userId)
+        ->where('start_date', '>=', now())
+        ->whereNotIn('id', $requestedEventIds)
+        ->get();
+
+    return response()->json($events);
+}
 
 
 
@@ -136,36 +152,36 @@ class EventController extends Controller
 
 
     public function saveEvent(Request $request)
-{
-    $validatedData = $request->validate([
-        'title' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'start_date' => 'required|date',
-        'end_date' => 'required|date|after_or_equal:start_date',
-        'location' => 'nullable|string|max:255',
-        'participants_limit' => 'nullable|integer|min:1',
-        'group_id' => 'nullable|integer|exists:groups,id',
-    ]);
+    {
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'location' => 'nullable|string|max:255',
+            'participants_limit' => 'nullable|integer|min:1',
+            'group_id' => 'nullable|integer|exists:groups,id',
+        ]);
 
-    $userId = Auth::id();
+        $userId = Auth::id();
 
-    $event = Event::create([
-        'title' => $validatedData['title'],
-        'description' => $validatedData['description'] ?? null,
-        'start_date' => $validatedData['start_date'],
-        'end_date' => $validatedData['end_date'],
-        'location' => $validatedData['location'] ?? null,
-        'participants_limit' => $validatedData['participants_limit'] ?? null,
-        'group_id' => $validatedData['group_id'] ?? 5, // 👈 Default to 5
-        'created_by' => $userId,
-        'edited_by' => $userId,
-    ]);
+        $event = Event::create([
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description'] ?? null,
+            'start_date' => $validatedData['start_date'],
+            'end_date' => $validatedData['end_date'],
+            'location' => $validatedData['location'] ?? null,
+            'participants_limit' => $validatedData['participants_limit'] ?? null,
+            'group_id' => $validatedData['group_id'] ?? 5, // 👈 Default to 5
+            'created_by' => $userId,
+            'edited_by' => $userId,
+        ]);
 
-    return response()->json([
-        'message' => 'Event created successfully.',
-        'event' => $event,
-    ], 201);
-}
+        return response()->json([
+            'message' => 'Event created successfully.',
+            'event' => $event,
+        ], 201);
+    }
 
 
 public function getEventsAttending()
@@ -183,6 +199,38 @@ public function getEventsAttending()
 }
 
 
+public function saveRequestToUserEvents(Request $request)
+{
+    $request->validate([
+        'event_id' => 'required|exists:events,id',
+    ]);
+
+    $userId = Auth::id();
+    $eventId = $request->input('event_id');
+
+    // Check if user already requested this event
+    $existing = UserEvent::where('user_id', $userId)
+        ->where('event_id', $eventId)
+        ->first();
+
+    if ($existing) {
+        return response()->json([
+            'message' => 'You have already requested to attend this event.'
+        ], 409);
+    }
+
+    // Create a new user-event record
+    $userEvent = UserEvent::create([
+        'user_id' => $userId,
+        'event_id' => $eventId,
+        // 'status' will use default from DB
+    ]);
+
+    return response()->json([
+        'message' => 'Request to attend has been submitted successfully.',
+        'data' => $userEvent,
+    ], 201);
+}
     
 
 
