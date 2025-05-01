@@ -1,42 +1,18 @@
 import { useEffect, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Typography,
-  TableFooter,
-  TablePagination,
-  IconButton,
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TableFooter, TablePagination, IconButton } from "@mui/material";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { useTheme } from "@mui/material/styles";
-import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
-import { useGetUserCreatedEvents } from "../hooks/useGetUserCreatedEvents";
 import axios from "axios";
-import requests from "../utils/requests";
+import Cookies from "js-cookie";
 
 const MyEventContent = () => {
-  const { data: user, isLoading: isUserLoading } = useIsLoggedIn();
-  const { data: events = [], isLoading: isEventLoading } = useGetUserCreatedEvents();
-
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
-  const theme = useTheme();
-
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
@@ -46,6 +22,30 @@ const MyEventContent = () => {
     location: "",
     participants_limit: "",
   });
+  const theme = useTheme();
+
+  const fetchEvents = async () => {
+    try {
+      const token = Cookies.get("token");
+      const response = await axios.get("http://localhost:8000/api/events/get_events_by_me", {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = response.data ?? [];
+      setEvents(data);
+    } catch (error) {
+      console.error("Failed to fetch events:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  // Fetch events created by the user (using the new endpoint)
+  useEffect(() => {
+
+    fetchEvents();
+  }, []);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -57,17 +57,24 @@ const MyEventContent = () => {
 
   const handleSubmit = async () => {
     try {
+      const token = Cookies.get("token");
       const payload = {
         ...formData,
         participants_limit: Number(formData.participants_limit),
         group_id: 5, // default group ID
       };
-      await requests.post("/events/save_event", payload);
+      await axios.post("http://localhost:8000/api/events/save_event", payload, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       alert("Event created successfully!");
+      fetchEvents();
       handleClose();
-      window.location.reload(); // optional: can replace with data refresh logic
+      // window.location.reload(); // optional: can replace with data refresh logic
     } catch (error) {
-      console.error(error);
+      console.error("Failed to create event:", error);
       alert("Failed to create event.");
     }
   };
@@ -146,33 +153,79 @@ const MyEventContent = () => {
     </Box>
   );
 
-  if (isUserLoading || isEventLoading) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <div>Loading...</div>;
 
   return (
     <>
-      <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
-        Events Created By Me
-      </Typography>
-
-      <Button variant="contained" color="primary" onClick={handleOpen} sx={{ mb: 2 }}>
-        Create Event
-      </Button>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+        <Typography variant="h6" sx={{ fontFamily: "'Dancing Script', cursive" }}>
+          Events Created By Me
+        </Typography>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={handleOpen} 
+          sx={{ backgroundColor: 'green', fontSize: '0.8rem' }} // Smaller button
+        >
+          Create Event
+        </Button>
+      </Box>
 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create New Event</DialogTitle>
         <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
-          <TextField name="title" label="Title" value={formData.title} onChange={handleInputChange} required />
-          <TextField name="description" label="Description" value={formData.description} onChange={handleInputChange} multiline rows={2} />
-          <TextField name="start_date" label="Start Date" type="datetime-local" value={formData.start_date} onChange={handleInputChange} InputLabelProps={{ shrink: true }} required />
-          <TextField name="end_date" label="End Date" type="datetime-local" value={formData.end_date} onChange={handleInputChange} InputLabelProps={{ shrink: true }} required />
-          <TextField name="location" label="Location" value={formData.location} onChange={handleInputChange} />
-          <TextField name="participants_limit" label="Participants Limit" type="number" value={formData.participants_limit} onChange={handleInputChange} />
+          <TextField
+            name="title"
+            label="Title"
+            value={formData.title}
+            onChange={handleInputChange}
+            required
+          />
+          <TextField
+            name="description"
+            label="Description"
+            value={formData.description}
+            onChange={handleInputChange}
+            multiline
+            rows={2}
+          />
+          <TextField
+            name="start_date"
+            label="Start Date"
+            type="datetime-local"
+            value={formData.start_date}
+            onChange={handleInputChange}
+            InputLabelProps={{ shrink: true }}
+            required
+          />
+          <TextField
+            name="end_date"
+            label="End Date"
+            type="datetime-local"
+            value={formData.end_date}
+            onChange={handleInputChange}
+            InputLabelProps={{ shrink: true }}
+            required
+          />
+          <TextField
+            name="location"
+            label="Location"
+            value={formData.location}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="participants_limit"
+            label="Participants Limit"
+            type="number"
+            value={formData.participants_limit}
+            onChange={handleInputChange}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained" color="primary">Create</Button>
+          <Button onClick={handleSubmit} variant="contained" color="primary">
+            Create
+          </Button>
         </DialogActions>
       </Dialog>
 
@@ -180,7 +233,7 @@ const MyEventContent = () => {
         <Table sx={{ minWidth: 650 }} aria-label="pagination table">
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
+              {/* <TableCell>ID</TableCell> */}
               <TableCell>Title</TableCell>
               <TableCell>Start Date</TableCell>
               <TableCell>End Date</TableCell>
@@ -194,8 +247,8 @@ const MyEventContent = () => {
               : events
             ).map((event: any) => (
               <TableRow key={event.id}>
-                <TableCell>{event.id}</TableCell>
-                <TableCell>{event.title}</TableCell>
+                {/* <TableCell>{event.id}</TableCell> */}
+                <TableCell sx={{ color: "purple" }}>{event.title}</TableCell>
                 <TableCell>{formatDateTime(event.start_date)}</TableCell>
                 <TableCell>{formatDateTime(event.end_date)}</TableCell>
                 <TableCell>{event.location}</TableCell>

@@ -190,13 +190,82 @@ public function getEventsAttending()
 
     $events = DB::table('user_events')
         ->join('events', 'user_events.event_id', '=', 'events.id')
+        ->join('users', 'events.created_by', '=', 'users.id') // join to get creator's name
         ->where('user_events.user_id', $userId)
         ->where('user_events.status', 1)
-        ->select('events.*') // Add more columns if needed
+        ->select('events.*', 'users.name as creator_name') // only add creator's name
         ->get();
 
     return response()->json($events);
 }
+
+
+
+public function getAllOutingRequests()
+{
+    $userId = Auth::id();
+
+    // $events = DB::table('user_events')
+    //     ->join('events', 'user_events.event_id', '=', 'events.id')
+    //     ->where('user_events.user_id', $userId)
+    //     // ->where('user_events.status', 1)
+    //     ->select('events.*') // Add more columns if needed
+    //     ->get();
+
+    $events = DB::table('user_events')
+    ->join('events', 'user_events.event_id', '=', 'events.id')
+    ->join('users', 'events.created_by', '=', 'users.id') // join with users
+    ->where('user_events.user_id', $userId)
+    ->select(
+        'events.*',
+        'user_events.id as request_id',
+        'user_events.status as request_status',
+        'users.name as creator_name' // get creator's name
+    )
+    ->get();
+
+
+
+    return response()->json($events);
+}
+
+
+public function getIncomingRequests()
+{
+    $userId = Auth::id();
+
+    $events = DB::table('events')
+        ->where('created_by', $userId)
+        ->get();
+
+    foreach ($events as $event) {
+        $requests = DB::table('user_events as ue')
+            ->join('users as u', 'ue.user_id', '=', 'u.id')
+            ->where('ue.event_id', $event->id)
+            ->select('ue.id as request_id', 'ue.status', 'u.name as requester_name', 'u.id as requester_id')
+            ->get();
+
+        $event->requests = $requests; // attach requests to event
+        $event->request_count = $requests->count();
+    }
+
+    return response()->json($events);
+}
+
+public function approveRequest($id)
+{
+    $updated = DB::table('user_events')
+        ->where('id', $id)
+        ->update(['status' => 1]);
+
+    if ($updated) {
+        return response()->json(['message' => 'Request approved.']);
+    } else {
+        return response()->json(['message' => 'Request not found or already approved.'], 404);
+    }
+}
+
+
 
 
 public function saveRequestToUserEvents(Request $request)
@@ -236,20 +305,31 @@ public function saveRequestToUserEvents(Request $request)
 
 
     public function getUserEventsThisMonth($userId)
-{
-    $currentMonth = now()->month; // Get the current month
-    $currentYear = now()->year; // Get the current year
+    {
+        $currentMonth = now()->month; // Get the current month
+        $currentYear = now()->year; // Get the current year
 
-    $events = DB::table('user_events as ue')
+        // $events = DB::table('user_events as ue')
+        //     ->join('events as e', 'ue.event_id', '=', 'e.id')
+        //     ->where('ue.user_id', $userId)
+        //     ->where('ue.status', 1)
+        //     ->whereMonth('e.start_date', $currentMonth) // Filter by current month
+        //     ->whereYear('e.start_date', $currentYear) // Filter by current year
+        //     ->select('e.*') // Select all columns from the events table
+        //     ->get();
+
+        $events = DB::table('user_events as ue')
         ->join('events as e', 'ue.event_id', '=', 'e.id')
+        ->join('users as u', 'e.created_by', '=', 'u.id') // Join users to get creator name
         ->where('ue.user_id', $userId)
-        ->whereMonth('e.start_date', $currentMonth) // Filter by current month
-        ->whereYear('e.start_date', $currentYear) // Filter by current year
-        ->select('e.*') // Select all columns from the events table
+        ->where('ue.status', 1)
+        ->whereMonth('e.start_date', $currentMonth)
+        ->whereYear('e.start_date', $currentYear)
+        ->select('e.*', 'u.name as creator_name') // Select creator's name
         ->get();
 
-    return $events;
-}
+        return $events;
+    }
 
     public function countEvents(){
         $events = Event::where('created_by','=',auth('sanctum')->user()->id)->count();

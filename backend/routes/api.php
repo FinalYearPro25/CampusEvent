@@ -20,6 +20,10 @@ Route::group([ 'middleware' => ['auth:sanctum']], function () {
     Route::post('/events/save_event',[EventController::class, 'saveEvent']);
     Route::get('/events/get_events_attending',[EventController::class, 'getEventsAttending']);
     Route::post('/events/request_to_attend',[EventController::class, 'saveRequestToUserEvents']);
+    Route::get('/events/get_all_outgoing_requests',[EventController::class, 'getAllOutingRequests']);
+    Route::get('/events/get_all_incoming_requests',[EventController::class, 'getIncomingRequests']);
+    Route::post('/requests/approve/{id}', [EventController::class, 'approveRequest']);
+
 
 });
 Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1' ,'middleware' => ['auth:sanctum']], function () {

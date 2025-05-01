@@ -192,8 +192,8 @@ const DashboardContent = () => {
             <Table sx={{ minWidth: 650 }} aria-label="pagination table">
               <TableHead>
                 <TableRow>
-                  {/* <TableCell>ID</TableCell> */}
                   <TableCell>Title</TableCell>
+                  <TableCell>Host</TableCell>
                   <TableCell>Start Date</TableCell>
                   <TableCell>End Date</TableCell>
                   <TableCell>Location</TableCell>
@@ -206,8 +206,8 @@ const DashboardContent = () => {
                   : upcomingEvents
                 ).map((event: any) => (
                   <TableRow key={event.id}>
-                    {/* <TableCell>{event.id}</TableCell> */}
                     <TableCell>{event.title}</TableCell>
+                    <TableCell>{event.creator_name}</TableCell>
                     <TableCell>{formatDateTime(event.start_date)}</TableCell>
                     <TableCell>{formatDateTime(event.end_date)}</TableCell>
                     <TableCell>{event.location}</TableCell>

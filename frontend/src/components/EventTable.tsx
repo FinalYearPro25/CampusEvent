@@ -14,8 +14,14 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { TableHead } from '@mui/material';
 import { Link } from 'react-router-dom';
+import Modal from '@mui/material/Modal';
+import Fade from '@mui/material/Fade';
+import Backdrop from '@mui/material/Backdrop';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 interface TablePaginationActionsProps {
   count: number;
@@ -36,7 +42,7 @@ function EventTable(props: TablePaginationActionsProps) {
   ) => {
     onPageChange(event, 0);
   };
-
+ 
   const handleBackButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     onPageChange(event, page - 1);
   };
@@ -83,17 +89,25 @@ function EventTable(props: TablePaginationActionsProps) {
   );
 }
 
-function createData(name: string, calories: string, fat: string, participants_limit: number) {
-  return { name, calories, fat, participants_limit };
-}
+export default function CustomPaginationActionsTable({ events }) {
 
-export default function CustomPaginationActionsTable({events}) {
-    const rows = events.data;
+  const formatDateTime = (datetime: string) => {
+    return new Date(datetime).toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+  const rows = events.data;
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
+  const [open, setOpen] = React.useState(false);
+  const [selectedEvent, setSelectedEvent] = React.useState<any>(null);
 
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
@@ -111,73 +125,174 @@ export default function CustomPaginationActionsTable({events}) {
     setPage(0);
   };
 
-  return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
-      <TableHead>
-          <TableRow>
-            <TableCell>Date</TableCell>
-            <TableCell align="left">Title</TableCell>
-            <TableCell align="left">Location</TableCell>
-            <TableCell align="left">Participants Limit</TableCell>
-            <TableCell align="left">Status</TableCell>
+  const handleClickOpen = (event: any) => {
+    setSelectedEvent(event);
+    setOpen(true);
+  };
 
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {(rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : rows
-          ).map((row) => (
-            <TableRow key={row.title}>
-              <TableCell component="th" scope="row">
-                {row.start_date}
-              </TableCell>
-              <TableCell style={{ width: 400 }} align="left">
-              <Link to={`/event/${row.id}`}>
-                {row.title}
-                </Link>
-              </TableCell>
-              <TableCell style={{ width: 400 }} align="left">
-                {row.location}
-              </TableCell>
-              <TableCell style={{ width: 150 }} align="left">
-                {row.participants_limit}
-              </TableCell>
-              <TableCell style={{ width: 150 }} align="left">
-                {(row.self == true)? "participated" : "created"}
-              </TableCell>
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
+          <TableHead>
+            <TableRow>
+              <TableCell
+              //  sx={{ fontWeight: 'bold', padding: '16px' }}
+               >Date</TableCell>
+              <TableCell
+              //  sx={{ fontWeight: 'bold', padding: '16px' }}
+                align="left">Title</TableCell>
+              <TableCell
+              //  sx={{ fontWeight: 'bold', padding: '16px' }}
+                align="left">Location</TableCell>
+              <TableCell
+              //  sx={{ fontWeight: 'bold', padding: '16px' }}
+                align="left">Details</TableCell>
             </TableRow>
-          ))}
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
-              <TableCell colSpan={6} />
+          </TableHead>
+          <TableBody>
+            {(rowsPerPage > 0
+              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : rows
+            ).map((row) => (
+              <TableRow key={row.title}>
+                <TableCell 
+                // sx={{ padding: '16px' }} 
+                component="th" scope="row">
+                  {formatDateTime(row.start_date)}
+                </TableCell>
+                <TableCell 
+                // sx={{ width: 400, padding: '16px' }} 
+                align="left">
+                  <Link to={`/event/${row.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+                    {row.title}
+                  </Link>
+                </TableCell>
+                <TableCell 
+                // sx={{ width: 150, padding: '16px' }}
+                 align="left">
+                  {row.location}
+                </TableCell>
+                <TableCell 
+                // sx={{ width: 150, padding: '16px' }}
+                 align="left">
+                  <IconButton onClick={() => handleClickOpen(row)}>
+                    <VisibilityIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 53 * emptyRows }}>
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[25, 50, 100, { label: 'All', value: -1 }]}
+                colSpan={4}
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={EventTable}
+              />
             </TableRow>
-          )}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[25, 50, 100, { label: 'All', value: -1 }]}
-              colSpan={5}
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              slotProps={{
-                select: {
-                  inputProps: {
-                    'aria-label': 'rows per page',
-                  },
-                  native: true,
-                },
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={EventTable}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+          </TableFooter>
+        </Table>
+      </TableContainer>
+
+      {/* Modal for Event Details */}
+      <Modal
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 450,
+              bgcolor: 'background.paper',
+              boxShadow: 24,
+              p: 4,
+              borderRadius: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+            }}
+          >
+            {selectedEvent && (
+              <>
+                <Typography variant="h6" gutterBottom>
+                  {selectedEvent.title}
+                </Typography>
+                <TextField
+                  label="Description"
+                  fullWidth
+                  multiline
+                  rows={4}
+                  value={selectedEvent.description}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  label="Location"
+                  fullWidth
+                  value={selectedEvent.location}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  label="Start Date"
+                  fullWidth
+                  value={formatDateTime(selectedEvent.start_date)}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  label="End Date"
+                  fullWidth
+                  value={formatDateTime(selectedEvent.end_date)}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  label="Participants Limit"
+                  fullWidth
+                  value={selectedEvent.participants_limit}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  sx={{ mb: 2 }}
+                />
+              </>
+            )}
+          </Box>
+        </Fade>
+      </Modal>
+    </>
   );
 }
