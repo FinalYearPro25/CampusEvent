@@ -241,7 +241,7 @@ const handleApproveRequest = async (requestId: number) => {
   
     } catch (err) {
       console.error("Approval failed:", err);
-      alert("Approval failed. Please try again.");
+      alert("Approval failed. Please try again. ");
     }
   };
   
