@@ -235,7 +235,7 @@ const handleApproveRequest = async (requestId: number) => {
   
       setIncomingEvents(updatedEvents);
   
-      // Update selectedIncomingEvent if it contains this request
+      // //Update selectedIncomingEvent if it contains this request
       const updatedSelected = updatedEvents.find(e => e.id === selectedIncomingEvent?.id);
       if (updatedSelected) setSelectedIncomingEvent(updatedSelected);
   
