@@ -15,6 +15,8 @@ const renderIcon = (keyword) =>{
             return ( <div ><DateRangeIcon style={{ marginRight: '8px', verticalAlign: 'middle'  , fontSize: "40px"  }} /> <span style={{ fontWeight: "bold"}} >My Events</span> </div>) ;
         case "groups":
             return ( <div ><DynamicFeedIcon style={{ marginRight: '8px', verticalAlign: 'middle'  , fontSize: "40px" }} /> <span style={{ fontWeight: "bold"}}>Total Attending</span> </div>) ;
+          case "groups":
+            return ( <div ><DynamicFeedIcon style={{ marginRight: '8px', verticalAlign: 'middle'  , fontSize: "40px" }} /> <span style={{ fontWeight: "bold"}}>Total Attending</span> </div>) ;
     }
 }
 

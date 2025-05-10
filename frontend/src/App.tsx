@@ -15,6 +15,8 @@ import UpcomingEvents from './pages/UpcomingEvents';
 import MyEvents from './pages/MyEvents';
 import Attending from './pages/Attending';
 import EventRequests from './pages/EventRequests';
+import ManageUsers from './pages/ManageUsers';
+import ManageEvents from './pages/ManageEvents';
 
 
 function App() {
@@ -38,6 +40,8 @@ function App() {
           <Route path="/my-events" element={<ProtectedRoute><MyEvents /></ProtectedRoute>}></Route>
           <Route path="/attending" element={<ProtectedRoute><Attending /></ProtectedRoute>}></Route>
           <Route path="/event-requests" element={<ProtectedRoute><EventRequests /></ProtectedRoute>}></Route>
+          <Route path="/manage-users" element={<ProtectedRoute><ManageUsers /></ProtectedRoute>}></Route>
+          <Route path="/manage-events" element={<ProtectedRoute><ManageEvents /></ProtectedRoute>}></Route>
           <Route path="*" element={<NotFound />} />
 
 

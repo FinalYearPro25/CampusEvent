@@ -23,6 +23,14 @@ Route::group([ 'middleware' => ['auth:sanctum']], function () {
     Route::get('/events/get_all_outgoing_requests',[EventController::class, 'getAllOutingRequests']);
     Route::get('/events/get_all_incoming_requests',[EventController::class, 'getIncomingRequests']);
     Route::post('/requests/approve/{id}', [EventController::class, 'approveRequest']);
+    Route::get('/admin/get_all_users', [EventController::class, 'getAllUsers']);
+    Route::get('/admin/get_all_events', [EventController::class, 'getAllEvents']);
+    Route::delete('admin/delete_user/{id}', [EventController::class, 'deleteUser']);
+    Route::delete('/admin/delete_event/{id}', [EventController::class, 'deleteEvent']);
+    Route::get('/admin/dashboard-stats', [EventController::class, 'getDashboardStats']);
+
+
+    
 
 
 });

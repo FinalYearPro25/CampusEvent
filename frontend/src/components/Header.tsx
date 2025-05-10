@@ -17,12 +17,7 @@ import { useIsLogout } from "../hooks/useGetLogout";
 import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
 import logo from "../assets/logo.png";
 
-const pages = [
-  { name: "Upcoming Events", linkTo: "/upcoming-events" },
-  { name: "My Events", linkTo: "/my-events" },
-  { name: "Attending", linkTo: "/attending" },
-  { name: "Requests", linkTo: "/event-requests" },
-];
+
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -30,6 +25,13 @@ function ResponsiveAppBar() {
   const { mutateAsync: logout } = useIsLogout();
   const { data: user, isLoading: isUserLoading } = useIsLoggedIn();
   const navigate = useNavigate();
+
+  const pages = [
+    { name: "Upcoming Events", linkTo: "/upcoming-events" },
+    { name: "My Events", linkTo: "/my-events" },
+    { name: "Attending", linkTo: "/attending" },
+    { name: "Requests", linkTo: "/event-requests" },
+  ];
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -121,6 +123,33 @@ function ResponsiveAppBar() {
                     </Typography>
                   </MenuItem>
                 ))}
+
+                {user.isLoggedIn && user.role=="ADM" && (
+                  <>
+                  
+                  <MenuItem onClick={handleCloseNavMenu}>
+                    <Typography
+                      component={RouterLink}
+                      to='/manage-users'
+                      sx={{ color: "black", textDecoration: "none" }}
+                    >
+                      Manage Users
+                    </Typography>
+                  </MenuItem>
+
+                  <MenuItem onClick={handleCloseNavMenu}>
+                    <Typography
+                      component={RouterLink}
+                      to='/manage-events'
+                      sx={{ color: "black", textDecoration: "none" }}
+                    >
+                      Manage Events
+                    </Typography>
+                  </MenuItem>
+
+                  </>                  
+                )}
+
               </Menu>
             </Box>
           )}
@@ -139,6 +168,30 @@ function ResponsiveAppBar() {
                   {item.name}
                 </Button>
               ))}
+
+          {user.isLoggedIn && user.role=="ADM" && (
+            <>
+            <Button
+              component={RouterLink}
+              to='/manage-users'
+              onClick={handleCloseNavMenu}
+              sx={{ my: 2, color: "white", display: "block" }}
+              >
+              Manage Users
+            </Button>
+            <Button
+              component={RouterLink}
+              to='/manage-events'
+              onClick={handleCloseNavMenu}
+              sx={{ my: 2, color: "white", display: "block" }}
+            >
+              Manage Events
+            </Button>
+            </>
+
+            
+          )}
+
             </Box>
           )}
 
@@ -175,7 +228,7 @@ function ResponsiveAppBar() {
                     <small>{user.email}</small>
                   </Typography>
                 </MenuItem>
-                <MenuItem onClick={handleCloseUserMenu}>
+                {/* <MenuItem onClick={handleCloseUserMenu}>
                   <Typography
                     component={RouterLink}
                     to={user.url}
@@ -183,7 +236,7 @@ function ResponsiveAppBar() {
                   >
                     Event Calendar
                   </Typography>
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem>
                   <Typography
                     onClick={handleLogout}

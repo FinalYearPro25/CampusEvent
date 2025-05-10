@@ -89,6 +89,7 @@ class AuthController extends Controller
                 'user_id' => auth('sanctum')->user()->id,
                 'email' => auth('sanctum')->user()->email,
                 'name' => auth('sanctum')->user()->name,
+                'role' => auth('sanctum')->user()->role,
                 'url' =>  env("FRONTEND_URL")."/memberEvents/".auth('sanctum')->user()->id."/".$members->generateUniqueString(auth('sanctum')->user()->id, auth('sanctum')->user()->created_at)
             ]);
         }

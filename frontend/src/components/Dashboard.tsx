@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import EventTable from "../components/EventTable";
 import SendIcon from "@mui/icons-material/Send";
 import {
   Grid,
@@ -15,17 +16,21 @@ import {
   IconButton,
   Box,
   Button,
+  Card,
+  CardContent,
+  CardActionArea,
 } from "@mui/material";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import GroupIcon from '@mui/icons-material/Group';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 import { useTheme } from "@mui/material/styles";
 import { useGetStatistics } from "../hooks/useGetStatistics";
 import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
 import { useGetUserEventsMonthly } from "../hooks/useGetUserEventsMonthly";
-import DashboardCard from "./DashboardCard";
-import EventTable from "../components/EventTable";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -46,6 +51,12 @@ const DashboardContent = () => {
   const [loadingUpcoming, setLoadingUpcoming] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [extraStats, setExtraStats] = useState({
+    total_users: 0,
+    total_events: 0,
+    total_upcoming: 0,
+  });
+
   const theme = useTheme();
 
   const fetchUpcomingEvents = async () => {
@@ -66,35 +77,52 @@ const DashboardContent = () => {
       setLoadingUpcoming(false);
     }
   };
+
+  // Fetch the extra stats (total users, total events, and total upcoming events)
   useEffect(() => {
+    const fetchExtraStats = async () => {
+      try {
+        const token = Cookies.get("token");
+        const response = await axios.get("http://localhost:8000/api/admin/dashboard-stats", {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setExtraStats(response.data);
+      } catch (error) {
+        console.error("Failed to fetch dashboard stats:", error);
+      }
+    };
+
+    fetchExtraStats();
     fetchUpcomingEvents();
   }, []);
 
+  const handleRequestToAttend = async (eventId: number) => {
+    const confirmed = window.confirm("Are you sure you want to send a request to attend this event?");
+    if (!confirmed) return;
 
-   const handleRequestToAttend = async (eventId: number) => {
-      const confirmed = window.confirm("Are you sure you want to send a request to attend this event?");
-      if (!confirmed) return;
-  
-      try {
-        const token = Cookies.get("token");
-  
-        await axios.post(
-          "http://localhost:8000/api/events/request_to_attend",
-          { event_id: eventId },
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        fetchUpcomingEvents();
-        alert("Request sent successfully!");
-      } catch (error) {
-        console.error("Failed to send request:", error);
-        alert("Failed to send request. Please try again.");
-      }
-    };
+    try {
+      const token = Cookies.get("token");
+
+      await axios.post(
+        "http://localhost:8000/api/events/request_to_attend",
+        { event_id: eventId },
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      fetchUpcomingEvents();
+      alert("Request sent successfully!");
+    } catch (error) {
+      console.error("Failed to send request:", error);
+      alert("Failed to send request. Please try again.");
+    }
+  };
 
   const formatDateTime = (datetime: string) =>
     new Date(datetime).toLocaleString("en-US", {
@@ -163,15 +191,96 @@ const DashboardContent = () => {
 
   return (
     <>
-      {/* Statistics cards */}
+      {/* Existing Statistics Cards - using DashboardCard Component */}
       <Grid container spacing={2}>
         {Object.keys(stat).map((key) => (
           <Grid item xs={12} sm={6} md={4} key={key}>
-            <Link to={`/${key}`}>
-              <DashboardCard item={stat[key]} keyword={key} />
+            <Link to={`#`}>
+              <Card sx={{ maxWidth: 345 }}>
+                <CardActionArea>
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="div" align='center'>
+                      {/* Render the icon based on the keyword */}
+                      {key === "members" && (
+                        <div>
+                          <GroupIcon style={{ marginRight: '8px', verticalAlign: 'middle', fontSize: "40px" }} />
+                          <span style={{ fontWeight: "bold" }}>Total Requests</span>
+                        </div>
+                      )}
+                      {key === "events" && (
+                        <div>
+                          <DateRangeIcon style={{ marginRight: '8px', verticalAlign: 'middle', fontSize: "40px" }} />
+                          <span style={{ fontWeight: "bold" }}>My Events</span>
+                        </div>
+                      )}
+                      {key === "groups" && (
+                        <div>
+                          <DynamicFeedIcon style={{ marginRight: '8px', verticalAlign: 'middle', fontSize: "40px" }} />
+                          <span style={{ fontWeight: "bold" }}>Total Attending</span>
+                        </div>
+                      )}
+                    </Typography>
+                    <Typography gutterBottom variant="h5" component="div" align='center'>
+                      {stat[key]}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
             </Link>
           </Grid>
         ))}
+      </Grid>
+
+      {/* New Statistics Cards (not using DashboardCard) */}
+      <Grid container spacing={2} sx={{ marginTop: 2 }}>
+        {/* Total Events */}
+        <Grid item xs={12} sm={6} md={4}>
+          <Card sx={{ maxWidth: 345 }}>
+            <CardActionArea>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div" align='center'>
+                  <DateRangeIcon style={{ marginRight: '8px', verticalAlign: 'middle', fontSize: "40px" }} />
+                  <span style={{ fontWeight: "bold" }}>Total Events</span>
+                </Typography>
+                <Typography gutterBottom variant="h5" component="div" align='center'>
+                  {extraStats.total_events}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        </Grid>
+        {/* Total Users */}
+        <Grid item xs={12} sm={6} md={4}>
+          <Card sx={{ maxWidth: 345 }}>
+            <CardActionArea>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div" align='center'>
+                  <GroupIcon style={{ marginRight: '8px', verticalAlign: 'middle', fontSize: "40px" }} />
+                  <span style={{ fontWeight: "bold" }}>Total Users</span>
+                </Typography>
+                <Typography gutterBottom variant="h5" component="div" align='center'>
+                  {extraStats.total_users}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        </Grid>
+        {/* Total Upcoming */}
+        <Grid item xs={12} sm={6} md={4}>
+          <Card sx={{ maxWidth: 345 }}>
+            <CardActionArea>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div" align='center'>
+                  <DynamicFeedIcon style={{ marginRight: '8px', verticalAlign: 'middle', fontSize: "40px" }} />
+                  <span style={{ fontWeight: "bold" }}>Total Upcoming</span>
+                </Typography>
+                <Typography gutterBottom variant="h5" component="div" align='center'>
+                  {extraStats.total_upcoming}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        </Grid>
       </Grid>
 
       {/* Monthly Events Table */}

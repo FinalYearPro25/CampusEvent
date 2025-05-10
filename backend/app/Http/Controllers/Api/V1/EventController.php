@@ -10,6 +10,7 @@ use App\Http\Resources\v1\EventCollection;
 use App\Http\Resources\v1\EventResource;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Api\V1\MembersController;
+use App\Models\User;
 use App\Models\UserEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -150,6 +151,94 @@ class EventController extends Controller
         return response()->json($events);
     }
 
+    public function deleteUser($id)
+    {
+        $user = Auth::user();
+
+        if ($user->role !== 'ADM') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+        try {
+            // Find the user by ID
+            $user = User::findOrFail($id);
+
+            // Delete the user
+            $user->delete();
+
+            return response()->json([
+                'message' => 'User deleted successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error deleting user: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    public function deleteEvent($id)
+{
+    // Optional: Check if the user has admin privileges
+    $user = Auth::user();
+    if ($user->role !== 'ADM') {
+        return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
+    $event = Event::find($id);
+
+    if (!$event) {
+        return response()->json(['message' => 'Event not found'], 404);
+    }
+
+    try {
+        $event->delete();
+        return response()->json(['message' => 'Event deleted successfully'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to delete event', 'error' => $e->getMessage()], 500);
+    }
+}
+
+
+    
+public function getAllEvents()
+{
+    $userId = Auth::id();
+
+    if (!$userId) {
+        return response()->json(['error' => 'User not authenticated'], 401);
+    }
+
+    // Join the users table to get creator name and email
+    $events = DB::table('events')
+        ->join('users', 'events.created_by', '=', 'users.id')
+        ->where('events.created_by', '!=', $userId)
+        ->select(
+            'events.*',
+            'users.name as creator_name',
+            'users.email as creator_email'
+        )
+        ->get();
+
+    if ($events->isEmpty()) {
+        return response()->json(['message' => 'No events found'], 404);
+    }
+
+    return response()->json($events);
+}
+
+
+public function getDashboardStats()
+{
+    $totalUsers = User::count();
+    $totalEvents = Event::count();
+    $totalUpcoming = Event::where('start_date', '>', now())->count();
+
+    return response()->json([
+        'total_users' => $totalUsers,
+        'total_events' => $totalEvents,
+        'total_upcoming' => $totalUpcoming,
+    ]);
+}
 
     public function saveEvent(Request $request)
     {
@@ -264,6 +353,26 @@ public function approveRequest($id)
         return response()->json(['message' => 'Request not found or already approved.'], 404);
     }
 }
+
+
+public function getAllUsers()
+{
+    $users = User::where('role', '!=', 'ADM')->get();
+
+    $events = DB::table('events')
+        ->whereIn('created_by', $users->pluck('id'))
+        ->get()
+        ->groupBy('created_by');
+
+    $users->transform(function ($user) use ($events) {
+        $user->events = $events[$user->id] ?? collect();
+        $user->events_count = $user->events->count();
+        return $user;
+    });
+
+    return response()->json($users);
+}
+
 
 
 
