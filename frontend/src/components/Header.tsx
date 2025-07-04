@@ -18,6 +18,16 @@ import { useIsLoggedIn } from "../hooks/useGetIsLoggedIn";
 import logo from "../assets/logo.png";
 
 
+import axios from "axios";
+import { Modal, Fade} from "@mui/material";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+
+const localizer = momentLocalizer(moment);
+
+
+
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -25,6 +35,45 @@ function ResponsiveAppBar() {
   const { mutateAsync: logout } = useIsLogout();
   const { data: user, isLoading: isUserLoading } = useIsLoggedIn();
   const navigate = useNavigate();
+
+  const [openCalendarModal, setOpenCalendarModal] = React.useState(false);
+const [calendarEvents, setCalendarEvents] = React.useState<any[]>([]);
+const [selectedEvent, setSelectedEvent] = React.useState<any | null>(null);
+
+const fetchCalendarEvents = async () => {
+  try {
+    const token = Cookies.get("token");
+    const { data } = await axios.get("http://localhost:8000/api/events/get_events_attending", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (Array.isArray(data)) {
+      const colored = data.map((event, index) => ({
+        ...event,
+        start: new Date(event.start_date),
+        end: new Date(event.end_date), // Multi-day support
+        title: event.title,
+        allDay: false,
+        resource: event,
+        color: getColor(index),
+      }));
+      setCalendarEvents(colored);
+    }
+  } catch (err) {
+    console.error("Failed to load events", err);
+  }
+};
+
+const getColor = (index: number) => {
+  const palette = [
+    "#68ad68", "#f57c00", "#2196f3", "#ab47bc", "#ef5350", "#26a69a", "#ffca28"
+  ];
+  return palette[index % palette.length];
+};
+
+
+
+
 
   const pages = [
     { name: "Upcoming Events", linkTo: "/upcoming-events" },
@@ -58,6 +107,7 @@ function ResponsiveAppBar() {
   if (isUserLoading) return <div>Loading...</div>;
 
   return (
+
     <AppBar style={{ backgroundColor: '#68ad68' }} position="static" sx={{ mb: 5 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
@@ -228,15 +278,19 @@ function ResponsiveAppBar() {
                     <small>{user.email}</small>
                   </Typography>
                 </MenuItem>
-                {/* <MenuItem onClick={handleCloseUserMenu}>
-                  <Typography
-                    component={RouterLink}
-                    to={user.url}
-                    sx={{ color: "black", textDecoration: "none" }}
+                <MenuItem
+                    onClick={async () => {
+                      handleCloseUserMenu();
+                      await fetchCalendarEvents();
+                      setOpenCalendarModal(true);
+                    }}
                   >
-                    Event Calendar
-                  </Typography>
-                </MenuItem> */}
+                    <Typography sx={{ color: "black", cursor: "pointer" }}>
+                      Event Calendar
+                    </Typography>
+                  </MenuItem>
+
+
                 <MenuItem>
                   <Typography
                     onClick={handleLogout}
@@ -250,6 +304,43 @@ function ResponsiveAppBar() {
           )}
         </Toolbar>
       </Container>
+
+      <Modal open={openCalendarModal} onClose={() => setOpenCalendarModal(false)}>
+  <Fade in={openCalendarModal}>
+    <Box sx={{
+      position: 'absolute',
+      top: '50%', left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 900, bgcolor: 'background.paper',
+      boxShadow: 24, p: 4, borderRadius: 2
+    }}>
+      <Typography variant="h6" gutterBottom>
+        Attending Events Calendar
+      </Typography>
+
+      <Calendar
+        localizer={localizer}
+        events={calendarEvents}
+        startAccessor="start"
+        endAccessor="end"
+        style={{ height: 500 }}
+        views={["month", "week", "day"]}
+        onSelectEvent={(event) => setSelectedEvent(event.resource)}
+        eventPropGetter={(event) => ({
+          style: {
+            backgroundColor: event.color,
+            borderRadius: "5px",
+            color: "white",
+            padding: "2px 5px",
+            border: "none"
+          }
+        })}
+      />
+    </Box>
+  </Fade>
+</Modal>
+
+
     </AppBar>
   );
 }
